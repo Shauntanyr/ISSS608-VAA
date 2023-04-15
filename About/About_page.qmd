@@ -1,14 +1,12 @@
 ---
-title: "About Me"
+title: "About"
 author: "Shaun Tan"
 ---
 
 title: "Shaun 'Jaws' Tan" 
 about: 
   template: jolla 
-  image: profile.jpg
-  image-width: 10em
-  image-shape: round
+  image: profile.jpg 
   links: 
     - icon: twitter 
       text: twitter 
@@ -16,6 +14,7 @@ about:
     - icon: github 
       text: Github 
       href: https://github.com 
+---
 
 Shaun Tan is the Chief Data Scientist at Wengo Analytics. When not innovating on data platforms, Finley enjoys spending time unicycling and playing with her pet iguana.
 
@@ -30,11 +29,3 @@ Shaun Tan is the Chief Data Scientist at Wengo Analytics. When not innovating on
 Wengo Analytics \| Head Data Scientist \| April 2018 - present
 
 GeoScynce \| Chief Analyst \| Spet 2012 - April 2018
-
-
-About this site
-
-```{r}
-1 + 1
-
-```

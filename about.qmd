@@ -10,9 +10,11 @@ about:
     - icon: github
       text: Github
       href: https://github.com/Shauntanyr/
+    - icon: tableau
+      href: https://public.tableau.com/app/profile/shaun.tan7796
 ---
   
-Shaun Tan is a helicopter pilot by training and stumbled into the world of data analytics during the COVID lockdown. When he's not searching the high seas for pirates, he puts his data analytics skills to good use in trying to improve his dismal golf game.
+Shaun is a helicopter pilot by training and stumbled into the world of data analytics during the COVID lockdown. When he's not searching the high seas for pirates, he attempts to puts his data analytics skills to good use by trying to improve his (dismal) golf game.
 
 ## Education
 

@@ -2,9 +2,9 @@
   {
     "objectID": "about.html",
     "href": "about.html",
-    "title": "About Me",
+    "title": "Shaun ‘Jaws’ Tan",
     "section": "",
-    "text": "title: “Shaun ‘Jaws’ Tan” about: template: jolla image: profile.jpg image-width: 10em image-shape: round links: - icon: twitter text: twitter href: https://twitter.com - icon: github text: Github href: https://github.com\nShaun Tan is the Chief Data Scientist at Wengo Analytics. When not innovating on data platforms, Finley enjoys spending time unicycling and playing with her pet iguana."
+    "text": "Shaun Tan is a helicopter pilot by training and stumbled into the world of data analytics during the COVID lockdown. When he’s not searching the high seas for pirates, he puts his data analytics skills to good use in trying to improve his dismal golf game."
   },
   {
     "objectID": "index.html",
@@ -44,15 +44,22 @@
   {
     "objectID": "about.html#education",
     "href": "about.html#education",
-    "title": "About Me",
+    "title": "Shaun ‘Jaws’ Tan",
     "section": "Education",
-    "text": "Education\nMaster of IT in Business, Analytics track | Singapore Management University, Singapore | 2023\nBachelor of Business Management (Finance) | Singapore Management University, Singapore | 2013 - 2016"
+    "text": "Education\nMaster of IT in Business (Analytics track)  | Singapore Management University, Singapore | 2023\nBachelor of Business Management (Finance) | Singapore Management University, Singapore | 2013 - 2016"
   },
   {
     "objectID": "about.html#experience",
     "href": "about.html#experience",
-    "title": "About Me",
+    "title": "Shaun ‘Jaws’ Tan",
     "section": "Experience",
-    "text": "Experience\nWengo Analytics | Head Data Scientist | April 2018 - present\nGeoScynce | Chief Analyst | Spet 2012 - April 2018\nAbout this site\n\n1 + 1\n\n[1] 2"
+    "text": "Experience\nWengo Analytics | Head Data Scientist | April 2018 - present\nGeoScynce | Chief Analyst | Spet 2012 - April 2018"
+  },
+  {
+    "objectID": "about.html#education-1",
+    "href": "about.html#education-1",
+    "title": "About Me",
+    "section": "Education",
+    "text": "Education\nUniversity of California, San Diego | San Diego, CA PhD in Mathematics | Sept 2011 - June 2015\nMacalester College | St. Paul MA B.A in Economics | Sept 2007 - June 2011"
   }
 ]

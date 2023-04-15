@@ -1,27 +1,22 @@
 ---
-title: "About Me"
-author: "Shaun Tan"
----
-
-title: "Shaun 'Jaws' Tan" 
-about: 
-  template: jolla 
+title: "Shaun 'Jaws' Tan"
+about:
+  template: jolla
   image: profile.jpg
-  image-width: 10em
-  image-shape: round
-  links: 
-    - icon: twitter 
-      text: twitter 
-      href: https://twitter.com 
-    - icon: github 
-      text: Github 
-      href: https://github.com 
-
-Shaun Tan is the Chief Data Scientist at Wengo Analytics. When not innovating on data platforms, Finley enjoys spending time unicycling and playing with her pet iguana.
+  links:
+    - icon: twitter
+      text: twitter
+      href: https://twitter.com/shauntanyr?s=21&t=-USw4xYzFpsFJii2hcYFKw
+    - icon: github
+      text: Github
+      href: https://github.com/Shauntanyr/
+---
+  
+Shaun Tan is a helicopter pilot by training and stumbled into the world of data analytics during the COVID lockdown. When he's not searching the high seas for pirates, he puts his data analytics skills to good use in trying to improve his dismal golf game.
 
 ## Education
 
-**Master of IT in Business, Analytics track** \| Singapore Management University, Singapore \| 2023
+**Master of IT in Business (Analytics track) ** \| Singapore Management University, Singapore \| 2023
 
 **Bachelor of Business Management (Finance)** \| Singapore Management University, Singapore \| 2013 - 2016
 
@@ -32,9 +27,3 @@ Wengo Analytics \| Head Data Scientist \| April 2018 - present
 GeoScynce \| Chief Analyst \| Spet 2012 - April 2018
 
 
-About this site
-
-```{r}
-1 + 1
-
-```

@@ -3,3 +3,5 @@ title: "ISSS608-VAA"
 ---
 
 Welcome to **ISSS608 Visual Analytics and Applications**. In this website, you will find my ~~sweat and blood~~ coursework prepared for this course.
+
+![ **"If data is the new gold, then visual analytics is the refiner's fire" - Anon**](index_photo.jpg)

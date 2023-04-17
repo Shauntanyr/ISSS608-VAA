@@ -27,6 +27,10 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 exam_data <- read_csv("data/Exam_data.csv")
 ```
 
+## About the data
+
+The data in question is exam data for primary 3 students for the subjects: English, Maths and Science. In addition, the class and gender of each student is given.
+
 # Plotting a simple horizontal bar chart
 
 ```{r}
@@ -57,8 +61,8 @@ ggplot(data = exam_data,
 Critique of this histogram:
 
 1.  y-aixs label is not clear (i.e. count).
-2.  The bars are notsorted by their resepctive frequencies.
-3.  For static graph, frequency values should be added to provide addition information.
+2.  The bars are not sorted by their respective frequencie (i.e. ascending or descending order)
+3.  For static graphs, additional information should be provided to each bar to allow the reader to get a better sense of the data at one glance.
 
 ## The makeover design
 
@@ -160,6 +164,5 @@ ggplot(data=exam_data,
   geom_vline(xintercept=50, 
              linetype="dashed",
              color="grey60",
-             size=1)
-
+             size=1) + annotate("text", x=14, y=5, label="Weak at both Subjects", angle=0, size=5, color="red") + annotate("text", x=85, y=100, label="Strong at both Subjects", angle=0, size=5, color="green") + annotate("text", x=85, y=5, label="Stronger at Maths", angle=0, size=5, color="orange") + annotate("text", x=14, y=100, label="Stronger at English", angle=0, size=5, color="orange")
 ```

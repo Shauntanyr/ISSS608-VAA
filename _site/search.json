@@ -67,14 +67,14 @@
     "href": "In-class_Ex/In-class_Ex01/In-class_Ex01.html",
     "title": "In-class_Ex01",
     "section": "",
-    "text": "The code chunk below uses p_load() of pacman package to check if tidyverse packages are installed on the computer. If they are, then they will be launched into R.\n\n\nCode\npacman::p_load(tidyverse)\n\n\n\n\n\n\n\nCode\nexam_data <- read_csv(\"data/Exam_data.csv\")"
+    "text": "The code chunk below uses p_load() of pacman package to check if tidyverse packages are installed on the computer. If they are, then they will be launched into R.\n\n\nCode\npacman::p_load(tidyverse)\n\n\n\n\n\n\n\nCode\nexam_data <- read_csv(\"data/Exam_data.csv\")\n\n\n\n\n\nThe data in question is exam data for primary 3 students for the subjects: English, Maths and Science. In addition, the class and gender of each student is given."
   },
   {
     "objectID": "In-class_Ex/In-class_Ex01/In-class_Ex01.html#the-original-design",
     "href": "In-class_Ex/In-class_Ex01/In-class_Ex01.html#the-original-design",
     "title": "In-class_Ex01",
     "section": "The original design",
-    "text": "The original design\n\n\nCode\nggplot(data = exam_data,\n       aes(x = RACE)) + \n  geom_bar() +\n  labs(x = \"Race\", y = \"Count\", title = \"Histogram of Exam Data\")\n\n\n\n\n\nCritique of this histogram:\n\ny-aixs label is not clear (i.e. count).\nThe bars are notsorted by their resepctive frequencies.\nFor static graph, frequency values should be added to provide addition information."
+    "text": "The original design\n\n\nCode\nggplot(data = exam_data,\n       aes(x = RACE)) + \n  geom_bar() +\n  labs(x = \"Race\", y = \"Count\", title = \"Histogram of Exam Data\")\n\n\n\n\n\nCritique of this histogram:\n\ny-aixs label is not clear (i.e. count).\nThe bars are not sorted by their respective frequencie (i.e. ascending or descending order)\nFor static graphs, additional information should be provided to each bar to allow the reader to get a better sense of the data at one glance."
   },
   {
     "objectID": "In-class_Ex/In-class_Ex01/In-class_Ex01.html#the-makeover-design",
@@ -123,6 +123,6 @@
     "href": "In-class_Ex/In-class_Ex01/In-class_Ex01.html#the-makeover-design-3",
     "title": "In-class_Ex01",
     "section": "The makeover design",
-    "text": "The makeover design\n\n\nCode\nggplot(data=exam_data, \n       aes(x=MATHS, y=ENGLISH)) +\n  geom_point() +\n  coord_cartesian(xlim=c(0,100),\n                  ylim=c(0,100)) +\n  geom_hline(yintercept=50,\n             linetype=\"dashed\",\n             color=\"grey60\",\n             size=1) + \n  geom_vline(xintercept=50, \n             linetype=\"dashed\",\n             color=\"grey60\",\n             size=1)"
+    "text": "The makeover design\n\n\nCode\nggplot(data=exam_data, \n       aes(x=MATHS, y=ENGLISH)) +\n  geom_point() +\n  coord_cartesian(xlim=c(0,100),\n                  ylim=c(0,100)) +\n  geom_hline(yintercept=50,\n             linetype=\"dashed\",\n             color=\"grey60\",\n             size=1) + \n  geom_vline(xintercept=50, \n             linetype=\"dashed\",\n             color=\"grey60\",\n             size=1) + annotate(\"text\", x=14, y=5, label=\"Weak at both Subjects\", angle=0, size=5, color=\"red\") + annotate(\"text\", x=85, y=100, label=\"Strong at both Subjects\", angle=0, size=5, color=\"green\") + annotate(\"text\", x=85, y=5, label=\"Stronger at Maths\", angle=0, size=5, color=\"orange\") + annotate(\"text\", x=14, y=100, label=\"Stronger at English\", angle=0, size=5, color=\"orange\")"
   }
 ]

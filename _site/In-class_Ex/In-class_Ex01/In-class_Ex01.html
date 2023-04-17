@@ -195,6 +195,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul class="collapse">
   <li><a href="#installing-and-launching-r-packages" id="toc-installing-and-launching-r-packages" class="nav-link" data-scroll-target="#installing-and-launching-r-packages">Installing and launching R packages</a></li>
   <li><a href="#importing-the-data" id="toc-importing-the-data" class="nav-link" data-scroll-target="#importing-the-data">Importing the data</a></li>
+  <li><a href="#about-the-data" id="toc-about-the-data" class="nav-link" data-scroll-target="#about-the-data">About the data</a></li>
   </ul></li>
   <li><a href="#plotting-a-simple-horizontal-bar-chart" id="toc-plotting-a-simple-horizontal-bar-chart" class="nav-link" data-scroll-target="#plotting-a-simple-horizontal-bar-chart">Plotting a simple horizontal bar chart</a></li>
   <li><a href="#designing-data-drive-graphics-for-analysis-i" id="toc-designing-data-drive-graphics-for-analysis-i" class="nav-link" data-scroll-target="#designing-data-drive-graphics-for-analysis-i">Designing Data-drive Graphics for Analysis I</a>
@@ -273,6 +274,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </details>
 </div>
 </section>
+<section id="about-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="about-the-data">About the data</h2>
+<p>The data in question is exam data for primary 3 students for the subjects: English, Maths and Science. In addition, the class and gender of each student is given.</p>
+</section>
 </section>
 <section id="plotting-a-simple-horizontal-bar-chart" class="level1">
 <h1>Plotting a simple horizontal bar chart</h1>
@@ -315,8 +320,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Critique of this histogram:</p>
 <ol type="1">
 <li>y-aixs label is not clear (i.e.&nbsp;count).</li>
-<li>The bars are notsorted by their resepctive frequencies.</li>
-<li>For static graph, frequency values should be added to provide addition information.</li>
+<li>The bars are not sorted by their respective frequencie (i.e.&nbsp;ascending or descending order)</li>
+<li>For static graphs, additional information should be provided to each bar to allow the reader to get a better sense of the data at one glance.</li>
 </ol>
 </section>
 <section id="the-makeover-design" class="level2">
@@ -471,7 +476,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept=</span><span class="dv">50</span>, </span>
 <span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>             <span class="at">linetype=</span><span class="st">"dashed"</span>,</span>
 <span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">color=</span><span class="st">"grey60"</span>,</span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>             <span class="at">size=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>             <span class="at">size=</span><span class="dv">1</span>) <span class="sc">+</span> <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x=</span><span class="dv">14</span>, <span class="at">y=</span><span class="dv">5</span>, <span class="at">label=</span><span class="st">"Weak at both Subjects"</span>, <span class="at">angle=</span><span class="dv">0</span>, <span class="at">size=</span><span class="dv">5</span>, <span class="at">color=</span><span class="st">"red"</span>) <span class="sc">+</span> <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x=</span><span class="dv">85</span>, <span class="at">y=</span><span class="dv">100</span>, <span class="at">label=</span><span class="st">"Strong at both Subjects"</span>, <span class="at">angle=</span><span class="dv">0</span>, <span class="at">size=</span><span class="dv">5</span>, <span class="at">color=</span><span class="st">"green"</span>) <span class="sc">+</span> <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x=</span><span class="dv">85</span>, <span class="at">y=</span><span class="dv">5</span>, <span class="at">label=</span><span class="st">"Stronger at Maths"</span>, <span class="at">angle=</span><span class="dv">0</span>, <span class="at">size=</span><span class="dv">5</span>, <span class="at">color=</span><span class="st">"orange"</span>) <span class="sc">+</span> <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x=</span><span class="dv">14</span>, <span class="at">y=</span><span class="dv">100</span>, <span class="at">label=</span><span class="st">"Stronger at English"</span>, <span class="at">angle=</span><span class="dv">0</span>, <span class="at">size=</span><span class="dv">5</span>, <span class="at">color=</span><span class="st">"orange"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="In-class_Ex01_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>

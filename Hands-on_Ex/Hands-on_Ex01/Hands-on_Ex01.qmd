@@ -1,6 +1,11 @@
 ---
 title: "Hands-on Exercise 1"
 author: "Shaun Tan"
+date: "4/14/2023"
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
 ---
 
 # Getting Started
@@ -11,6 +16,10 @@ The code chunk below uses p_load() of pacman package to check if tidyverse packa
 
 ```{r}
 pacman::p_load(tidyverse)
+```
+
+```{r setup, include=FALSE} 
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 ```
 
 ## Importing the data
@@ -25,6 +34,6 @@ exam_data <- read_csv("data/Exam_data.csv")
 ggplot(data = exam_data,
        aes(x = RACE, fill=RACE)) + 
   geom_bar() +
-  labs(title = "Histogram of Exam Data")
+  labs(title = "Histogram of Exam Data") +
   theme_grey()
 ```

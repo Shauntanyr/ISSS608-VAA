@@ -67,7 +67,7 @@
     "href": "In-class_Ex/In-class_Ex01/In-class_Ex01.html",
     "title": "In-class_Ex01",
     "section": "",
-    "text": "The code chunk below uses p_load() of pacman package to check if tidyverse packages are installed on the computer. If they are, then they will be launched into R.\n\n\nShow the code\npacman::p_load(tidyverse)\n\n\n\n\n\n\n\nShow the code\nexam_data <- read_csv(\"data/Exam_data.csv\")\n\n\n\n\n\nThe data in question is exam data for primary 3 students for the subjects: English, Maths and Science. In addition, the class and gender of each student is given."
+    "text": "The code chunk below uses p_load() of pacman package to check if tidyverse packages are installed on the computer. If they are, then they will be launched into R.\n\n\nShow the code\npacman::p_load(tidyverse)\n\n\n\n\n\n\n\nShow the code\nexam_data <- read_csv(\"data/Exam_data.csv\")\n\n\n\n\n\nThe data in question is exam data for primary 3 students for the subjects: English, Math, and Science. In addition, the class and gender of each student is given."
   },
   {
     "objectID": "In-class_Ex/In-class_Ex01/In-class_Ex01.html#the-original-design",
@@ -95,21 +95,21 @@
     "href": "In-class_Ex/In-class_Ex01/In-class_Ex01.html#the-makeover-design-1",
     "title": "In-class_Ex01",
     "section": "The makeover design",
-    "text": "The makeover design\n\n\nShow the code\nggplot(data=exam_data, \n       aes(x= MATHS)) +\n  geom_histogram(bins=20, \n                 color=\"black\", \n                 fill=\"light blue\") +\n  geom_vline(aes(xintercept=mean(MATHS, na.rm=T)),\n             color=\"red\", \n             linetype=\"dashed\", \n             size=1, label = \"mean\") +\n  geom_vline(aes(xintercept=median(MATHS, na.rm=T)),\n             color=\"grey30\",\n             linetype=\"dashed\", \n             size=1) + annotate(\"text\", x=75, y=40, label=\"Median\", angle=90, size=3, color=\"grey30\") +\n             annotate(\"text\", x=68, y=40, label=\"Mean\", angle=90, size=3, color=\"red\") +\n  ylim(0,45)"
+    "text": "The makeover design\n\n\nShow the code\nggplot(data=exam_data, \n       aes(x= MATHS)) +\n  geom_histogram(bins=20, \n                 color=\"black\", \n                 fill=\"light blue\") +\n  geom_vline(aes(xintercept=mean(MATHS, na.rm=T)),\n             color=\"red\", \n             linetype=\"dashed\", \n             size=1, label = \"mean\") +\n  geom_vline(aes(xintercept=median(MATHS, na.rm=T)),\n             color=\"grey30\",\n             linetype=\"dashed\", \n             size=1) + annotate(\"text\", x=75, y=40, label=\"Median\", angle=90, size=3, color=\"grey30\") +\n             annotate(\"text\", x=68, y=40, label=\"Mean\", angle=90, size=3, color=\"red\") + ylim(0,45) + labs(x = \"Math Results\", y = \"No. of\\nPupils\") +\n  theme_grey() +\n  theme(axis.title.y=element_text(angle = 0))"
   },
   {
     "objectID": "In-class_Ex/In-class_Ex01/In-class_Ex01.html#the-original-design-2",
     "href": "In-class_Ex/In-class_Ex01/In-class_Ex01.html#the-original-design-2",
     "title": "In-class_Ex01",
     "section": "The original design",
-    "text": "The original design\n\n\nShow the code\nggplot(data=exam_data, aes(x = ENGLISH)) +\n  geom_histogram(data = exam_data, fill = \"darkgrey\") +\n  facet_wrap(~ GENDER) +\n  guides(fill = FALSE) +  \n  theme_bw()\n\n\n\n\n\nCritique of these 2 histogram:\n\ny-aixs label is not clear (i.e. count).\nThere difference between male and female results is not apparent as there is no reference\nThere is no clear message that these histograms are looking to tell"
+    "text": "The original design\n\n\nShow the code\nggplot(data=exam_data, aes(x = ENGLISH)) +\n  geom_histogram(data = exam_data, fill = \"darkgrey\") +\n  facet_wrap(~ GENDER) +\n  guides(fill = FALSE) +  \n  theme_bw() + labs(x = \"English Results\", y = \"No. of\\nPupils\") +\n  theme_grey() +\n  theme(axis.title.y=element_text(angle = 0))\n\n\n\n\n\nCritique of these 2 histogram:\n\ny-aixs label is not clear (i.e. count).\nThere difference between male and female results is not apparent as there is no reference\nThere is no clear message that these histograms are looking to tell"
   },
   {
     "objectID": "In-class_Ex/In-class_Ex01/In-class_Ex01.html#the-makeover-design-2",
     "href": "In-class_Ex/In-class_Ex01/In-class_Ex01.html#the-makeover-design-2",
     "title": "In-class_Ex01",
     "section": "The makeover design",
-    "text": "The makeover design\n\n\nShow the code\nd <- exam_data   \nd_bg <- d[, -3]  \n\nggplot(d, aes(x = ENGLISH, fill = GENDER)) +\n  geom_histogram(data = d_bg, fill = \"grey\", alpha = .5) +\n  geom_histogram(colour = \"black\") +\n  facet_wrap(~ GENDER) +\n  guides(fill = FALSE) +  \n  theme_bw()"
+    "text": "The makeover design\n\n\nShow the code\nd <- exam_data   \nd_bg <- d[, -3]  \n\nggplot(d, aes(x = ENGLISH, fill = GENDER)) +\n  geom_histogram(data = d_bg, fill = \"grey\", alpha = .5) +\n  geom_histogram(colour = \"black\") +\n  facet_wrap(~ GENDER) +\n  guides(fill = FALSE) +  \n  theme_bw() +labs(x = \"English Results\", y = \"No. of\\nPupils\") +\n  theme(axis.title.y=element_text(angle = 0))"
   },
   {
     "objectID": "In-class_Ex/In-class_Ex01/In-class_Ex01.html#the-original-design-3",
@@ -123,6 +123,6 @@
     "href": "In-class_Ex/In-class_Ex01/In-class_Ex01.html#the-makeover-design-3",
     "title": "In-class_Ex01",
     "section": "The makeover design",
-    "text": "The makeover design\n\n\nShow the code\nggplot(data=exam_data, \n       aes(x=MATHS, y=ENGLISH)) +\n  geom_point() +\n  coord_cartesian(xlim=c(0,100),\n                  ylim=c(0,100)) +\n  geom_hline(yintercept=50,\n             linetype=\"dashed\",\n             color=\"grey60\",\n             size=1) + \n  geom_vline(xintercept=50, \n             linetype=\"dashed\",\n             color=\"grey60\",\n             size=1) + annotate(\"text\", x=14, y=5, label=\"Weak at both Subjects\", angle=0, size=5, color=\"red\") + annotate(\"text\", x=85, y=100, label=\"Strong at both Subjects\", angle=0, size=5, color=\"green\") + annotate(\"text\", x=85, y=5, label=\"Stronger at Maths\", angle=0, size=5, color=\"orange\") + annotate(\"text\", x=14, y=100, label=\"Stronger at English\", angle=0, size=5, color=\"orange\")"
+    "text": "The makeover design\n\n\nShow the code\nggplot(data=exam_data, \n       aes(x=MATHS, y=ENGLISH)) +\n  geom_point() +\n  coord_cartesian(xlim=c(0,100),\n                  ylim=c(0,100)) +\n  geom_hline(yintercept=50,\n             linetype=\"dashed\",\n             color=\"grey60\",\n             size=1) + \n  geom_vline(xintercept=50, \n             linetype=\"dashed\",\n             color=\"grey60\",\n             size=1) + annotate(\"text\", x=14, y=5, label=\"Weak at both Subjects\", angle=0, size=5, color=\"red\") + annotate(\"text\", x=85, y=100, label=\"Strong at both Subjects\", angle=0, size=5, color=\"green\") + annotate(\"text\", x=85, y=5, label=\"Stronger at Maths\", angle=0, size=5, color=\"orange\") + annotate(\"text\", x=14, y=100, label=\"Stronger at English\", angle=0, size=5, color=\"orange\") + \n  labs(x = \"Math Results\", y = \"English Results\")"
   }
 ]

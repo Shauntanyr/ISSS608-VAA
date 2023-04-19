@@ -148,7 +148,8 @@ ggplot(d, aes(x = ENGLISH, fill = GENDER)) +
   geom_histogram(colour = "black") +
   facet_wrap(~ GENDER) +
   guides(fill = FALSE) +  
-  theme_bw()
+  theme_bw() +labs(x = "English Results", y = "No. of\nPupils") +
+  theme(axis.title.y=element_text(angle = 0))
 ```
 # Designing Data-driven Graphics for Analysis IV
 

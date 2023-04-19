@@ -30,7 +30,7 @@ exam_data <- read_csv("data/Exam_data.csv")
 
 ## About the data
 
-The data in question is exam data for primary 3 students for the subjects: English, Maths and Science. In addition, the class and gender of each student is given.
+The data in question is exam data for primary 3 students for the subjects: English, Math, and Science. In addition, the class and gender of each student is given.
 
 # Plotting a simple horizontal bar chart
 
@@ -113,8 +113,9 @@ ggplot(data=exam_data,
              color="grey30",
              linetype="dashed", 
              size=1) + annotate("text", x=75, y=40, label="Median", angle=90, size=3, color="grey30") +
-             annotate("text", x=68, y=40, label="Mean", angle=90, size=3, color="red") +
-  ylim(0,45)
+             annotate("text", x=68, y=40, label="Mean", angle=90, size=3, color="red") + ylim(0,45) + labs(x = "Math Results", y = "No. of\nPupils") +
+  theme_grey() +
+  theme(axis.title.y=element_text(angle = 0))
 ```
 
 # Designing Data-driven Graphics for Analysis III
@@ -126,7 +127,9 @@ ggplot(data=exam_data, aes(x = ENGLISH)) +
   geom_histogram(data = exam_data, fill = "darkgrey") +
   facet_wrap(~ GENDER) +
   guides(fill = FALSE) +  
-  theme_bw()
+  theme_bw() + labs(x = "English Results", y = "No. of\nPupils") +
+  theme_grey() +
+  theme(axis.title.y=element_text(angle = 0))
 ```
 Critique of these 2 histogram:
 
@@ -180,5 +183,6 @@ ggplot(data=exam_data,
   geom_vline(xintercept=50, 
              linetype="dashed",
              color="grey60",
-             size=1) + annotate("text", x=14, y=5, label="Weak at both Subjects", angle=0, size=5, color="red") + annotate("text", x=85, y=100, label="Strong at both Subjects", angle=0, size=5, color="green") + annotate("text", x=85, y=5, label="Stronger at Maths", angle=0, size=5, color="orange") + annotate("text", x=14, y=100, label="Stronger at English", angle=0, size=5, color="orange")
+             size=1) + annotate("text", x=14, y=5, label="Weak at both Subjects", angle=0, size=5, color="red") + annotate("text", x=85, y=100, label="Strong at both Subjects", angle=0, size=5, color="green") + annotate("text", x=85, y=5, label="Stronger at Maths", angle=0, size=5, color="orange") + annotate("text", x=14, y=100, label="Stronger at English", angle=0, size=5, color="orange") + 
+  labs(x = "Math Results", y = "English Results")
 ```

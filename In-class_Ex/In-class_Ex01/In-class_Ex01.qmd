@@ -48,7 +48,7 @@ ggplot(data = exam_data,
   labs(title = "Horizontal Histogram of Exam Data")
 ```
 
-# Designing Data-drive Graphics for Analysis I
+# Designing Data-driven Graphics for Analysis I
 
 ## The original design
 
@@ -81,17 +81,22 @@ ggplot(data = exam_data,
   theme_grey() +
   theme(axis.title.y=element_text(angle = 0))
 ```
-# Designing Data-drive Graphics for Analysis II
+# Designing Data-driven Graphics for Analysis II
 
 ## The original design
 ```{r}
 ggplot(data = exam_data,
        aes(x = MATHS)) + 
-  geom_histogram(col = "#1b98e0",
-                 bins=20) +
+  geom_histogram(bins=20) +
   ylim(0,45)
   
 ```
+Critique of this histogram:
+
+1.  y-aixs label is not clear (i.e. count).
+2.  Can't tell between each bar in the histogram
+3.  There is no clear message that this histogram is looking to tell
+
 ## The makeover design
 
 ```{r}
@@ -108,11 +113,11 @@ ggplot(data=exam_data,
              color="grey30",
              linetype="dashed", 
              size=1) + annotate("text", x=75, y=40, label="Median", angle=90, size=3, color="grey30") +
-             annotate("text", x=68, y=40, label="Mean", angle=90, size=3, color="red")
+             annotate("text", x=68, y=40, label="Mean", angle=90, size=3, color="red") +
   ylim(0,45)
 ```
 
-# Designing Data-drive Graphics for Analysis III
+# Designing Data-driven Graphics for Analysis III
 
 ## The original design
 
@@ -123,6 +128,11 @@ ggplot(data=exam_data, aes(x = ENGLISH)) +
   guides(fill = FALSE) +  
   theme_bw()
 ```
+Critique of these 2 histogram:
+
+1.  y-aixs label is not clear (i.e. count).
+2.  There difference between male and female results is not apparent as there is no reference
+3.  There is no clear message that these histograms are looking to tell
 
 ## The makeover design
 
@@ -137,7 +147,7 @@ ggplot(d, aes(x = ENGLISH, fill = GENDER)) +
   guides(fill = FALSE) +  
   theme_bw()
 ```
-# Designing Data-drive Graphics for Analysis IV
+# Designing Data-driven Graphics for Analysis IV
 
 ## The original design
 
@@ -149,6 +159,11 @@ ggplot(data=exam_data,
   coord_cartesian(xlim=c(0,100),
                   ylim=c(0,100))
 ```
+Critique of this Scatterplot:
+
+1.  Points are two small
+2.  No relative reference point/line 
+3.  There is no clear message that this histogram is looking to tell
 
 ## The makeover design
 

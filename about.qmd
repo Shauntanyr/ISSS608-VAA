@@ -10,7 +10,7 @@ about:
     - icon: github
       text: Github
       href: https://github.com/Shauntanyr/
-    - icon: tableau
+    - text: Tableau
       href: https://public.tableau.com/app/profile/shaun.tan7796
 ---
   

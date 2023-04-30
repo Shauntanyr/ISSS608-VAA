@@ -13,14 +13,11 @@ about:
     - text: Tableau
       href: https://public.tableau.com/app/profile/shaun.tan7796
 ---
-  
+
 Shaun is a helicopter pilot by training and stumbled into the wonderful world of data analytics during the COVID lockdown. When he's not searching the high seas for pirates, he attempts to puts his data analytics skills to good use in trying to improve his (dismal) golf game.
 
 ## Education
 
-**Master of IT in Business (Analytics track) ** \| Singapore Management University, Singapore \| 2023
+**Master of IT in Business (Analytics track)** \| Singapore Management University, Singapore \| 2023
 
-**Bachelor of Business Management (Finance)** \| Singapore Management University, Singapore \| 2013 - 2016
-
-
-
+**Bachelor of Business Management (Finance),** *summa cum laude* \| Singapore Management University, Singapore \| 2013 - 2016

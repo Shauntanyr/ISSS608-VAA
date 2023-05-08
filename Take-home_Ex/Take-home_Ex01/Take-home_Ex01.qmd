@@ -1,0 +1,237 @@
+---
+title: "Take-home Exercise 1"
+author: "Shaun Tan"
+date: "5/1/2023"
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
+---
+
+# 1. Overview
+
+City of Engagement, with a total population of 50,000, is a small city located at Country of Nowhere. The city serves as a service centre of an agriculture region surrounding the city. The main agriculture of the region is fruit farms and vineyards. The local council of the city is in the process of preparing the Local Plan 2023. A sample survey of 1000 representative residents had been conducted to collect data related to their household demographic and spending patterns, among other things. The city aims to use the data to assist with their major community revitalization efforts, including how to allocate a very large city renewal grant they have recently received.
+
+## 1.1 The Task
+
+The task is to apply the appropriate visual analytics concepts and methods to reveal the demographic and financial characteristics of the city of Engagement, using appropriate static and interactive statistical graphics methods. This exercise requires a user-friendly and interactive solution that helps city managers and planners to explore the complex data in an engaging way and reveal hidden patterns. The data should be processed by using appropriate tidyverse family of packages and the statistical graphics must be prepared using ggplot2 and its extensions.
+
+## 1.2 The Data
+
+*Participants.csv* contains information about the residents of City of Engagement that have agreed to participate in this study. The data consist of 1,011 rows and 7 columns.
+
+| Columns                        | Description                                                                                                                                                                                        |
+|------------------------------------|------------------------------------|
+| participantId (integer)        | unique ID assigned to each participant                                                                                                                                                             |
+| householdSize (integer)        | the number of people in the participant's household                                                                                                                                                |
+| haveKids (boolean)             | whether there are children living in the participant's household                                                                                                                                   |
+| age (integer)                  | participant's age in years at the start of the study                                                                                                                                               |
+| educationLevel (string factor) | the participant's education level, one of: {"Low", "HighSchoolOrCollege", "Bachelors", "Graduate"                                                                                                  |
+| interestGroup (char)           | a char representing the participant's stated primary interest group, one of {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"}. Note: specific topics of interest have been redacted to avoid bias |
+| joviality (float)              | a value ranging from \[0,1\] indicating the participant's overall happiness level at the start of the study                                                                                        |
+
+*FinancialJournal.csv* contains information about financial transactions of the participants. The data consist of 1,513,636 rows and 4 columns.
+
+| Columns                  | Description                                                                                                               |
+|------------------|------------------------------------------------------|
+| participantId (integer)  | unique ID corresponding to the participant affected                                                                       |
+| timestamp (datetime)     | the time when the check-in was logged                                                                                     |
+| category (string factor) | a string describing the expense category, one of {"Education", "Food", "Recreation", "RentAdjustment", "Shelter", "Wage"} |
+| amount (double)          | the amount of the transaction                                                                                             |
+
+# 
+
+2.  Data Wrangling and Preparation
+
+## 2.1 Installing and launching requisite R packages
+
+The code chunk below uses p_load() of pacman package to check if tidyverse packages are installed on the computer. If they are, then they will be launched into R.
+
+```{r}
+pacman::p_load(ggstatsplot, ggthemes, psych, plotly, corrplot, lubridate, ggpubr, plotly, treemap, d3treeR, hrbrthemes, ggrepel, RColorBrewer, gganimate, viridis, ggridges, ggrepel, testthat, hmisc, tidyverse, dplyr, gapminder, ggiraph, patchwork, DT)
+
+```
+
+knitr::opts_chunk\$set(warning = FALSE, message = FALSE)
+
+## 2.2 Importing the data
+
+```{r}
+financial_data <- read_csv("data/FinancialJournal.csv")
+participants <- read_csv("data/Participants.csv")
+```
+
+```{r}
+psych::describe(participants)
+```
+
+```{r}
+psych::describe(financial_data)
+head(financial_data)
+```
+
+```{r}
+summary(financial_data)
+```
+
+Checking for missing values
+
+```{r}
+any(is.na(financial_data))
+```
+
+```{r}
+head(participants)
+```
+
+## **2.3 Data Prep**
+
+Issues with the data:
+
+1.  The column "timestamp" in financialJournal.csv constains timestamps of financial transactions from 1 Mar 2022 till 28 Feb 2023 - one year's worth of data. The time would be irrelevant and therefore the month and year would be extracted.
+
+2.  EducationLevel column in participants.csv should be ordinal, in the following order:
+
+    a.  Graduate
+    b.  Bachelors
+    c.  HighSchoolorCollege
+    d.  Low
+
+3.  
+
+```{r}
+#Extracting the Date from the Timestamp data
+financial_data$Month_Yr <- as.Date(financial_data$timestamp, "%Y-%m")
+#financial_data_cleaned$date_component <- as.Date(financial_data$timestamp,'%Y-%m-%d')
+financial_data
+```
+
+```{r}
+#Making Education Level ordinal
+#participants$educationLevel <- factor(participants$educationLevel, order = FALSE) 
+```
+
+```{r}
+#Merging Dataframes
+merged_data <- merge(financial_data, participants, by = "participantId")
+merged_data
+```
+
+```{r}
+#Filter required data
+df1 <- merged_data %>%
+  select("participantId", "category", "amount", "Month_Yr", "householdSize", 
+         "haveKids", "age", "educationLevel", "interestGroup", "joviality")
+
+
+
+yearly_financials <- df1 %>%
+  group_by(participantId, category) %>% 
+  summarise(Total = sum(amount), householdSize = unique(householdSize), haveKids = unique(haveKids), age = unique(age), educationLevel = unique(educationLevel), interestGroup = unique(interestGroup), joviality = unique(joviality))
+
+yearly_financials
+```
+
+```{r}
+Net_savings <- yearly_financials %>%
+  group_by(participantId) %>% 
+  summarise(Total_Savings = sum(Total), householdSize = unique(householdSize), haveKids = unique(haveKids), age = unique(age), educationLevel = unique(educationLevel), interestGroup = unique(interestGroup), joviality = unique(joviality))
+
+Net_savings
+```
+
+```{r}
+p1 <- ggbetweenstats(
+  data = dplyr::filter(yearly_financials, category %in% c("Wage")),
+  x = educationLevel, 
+  y = Total,
+  grouping.var= category,
+  type = "np",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "s",
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Differences in wage for different education levels",
+  package = "ggthemes", palette = "Tableau_10"
+)
+
+p2 <- ggbetweenstats(
+  data = dplyr::filter(yearly_financials, category %in% c("Shelter")),
+  x = educationLevel, 
+  y = Total,
+  grouping.var= category,
+  type = "np",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "s",
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Differences in Rent Expenditure for different education levels",
+  package = "ggthemes", palette = "Tableau_10")
+
+p1
+
+p2
+```
+
+
+
+```{r}
+gghistogram(data = dplyr::filter(yearly_financials, category %in% c("Shelter", "Education", "Recreation", "Food")), x = "Total", add = "mean", rug = TRUE,
+   color = "category", fill = "category", palette = "spectral", add_density = TRUE)
+```
+
+
+```{r}
+set.seed(123)
+
+grouped_gghistostats(
+  data              = dplyr::filter(yearly_financials, category %in% c("Recreation", "Shelter", "Education", "Food")),
+  x                 = Total,
+  test.value        = 50,
+  type              = "nonparametric",
+  xlab              = "Total Expendititure",
+  grouping.var      = category,
+  normal.curve      = TRUE,
+  normal.curve.args = list(color = "red", size = 1),
+  ggtheme           = ggthemes::theme_tufte(),
+  ## modify the defaults from `{ggstatsplot}` for each plot
+  plotgrid.args     = list(nrow = 2),
+  annotation.args   = list(title = "Expenditure for different categories")
+)
+```
+
+
+set.seed(1234)
+
+gghistostats(
+  data = ggplot2::yearly_financials,
+  x = Total,
+  type = "bayes",
+  test.value = 60,
+  xlab = "Total"
+)
+
+
+
+Net_savings$tooltip <- c(paste0(     
+  "participant Id = ", Net_savings$participantId,         
+  "\n Education Level = ", Net_savings$educationLevel,
+  "\n Age = ", Net_savings$age)) 
+
+p <- ggplot(data=Net_savings, 
+       aes(x = Total_Savings)) +
+  geom_boxplot_interactive(
+    aes(tooltip = Net_savings$tooltip), 
+    stackgroups = TRUE,
+    binwidth = 1,
+    method = "histodot") +
+  scale_y_continuous(NULL,               
+                     breaks = NULL)
+girafe(
+  ggobj = p,
+  width_svg = 8,
+  height_svg = 8*0.618
+)
+

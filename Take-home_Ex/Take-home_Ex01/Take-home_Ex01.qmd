@@ -182,13 +182,16 @@ A look at the distribution of the data with joviality as the target variable.
 ggplot(df1) +
   aes(x = joviality) +
   geom_histogram(bins = 60L, fill = "#112446") +
-  labs(
+  theme_minimal() + labs(
     x = "Joviality",
     y = "Count of Participants",
     title = "Histogram of Joviality of Participants",
     subtitle = "This plot shows the distribution of joviality scores - which seems to be uniformly distributed. "
-  ) +
-  theme_minimal()
+  ) + theme(plot.title = element_text(face = "bold", size = 24), plot.subtitle = element_text(size = 18),
+  
+  axis.title.x = element_text(size = 20, hjust = 1),
+  axis.title.y = element_text(size = 20),
+  axis.text = element_text(size = 14))
 ```
 ```{r}
 set.seed(1234)
@@ -206,7 +209,11 @@ gghistostats(
     title = "Histogram of Joviality of Participants",
     subtitle = "This plot shows the distribution of joviality scores - which seems to be uniformly distributed. "
   ) +
-  theme_minimal()
+  theme_minimal() + theme(plot.title = element_text(face = "bold", size = 24), plot.subtitle = element_text(size = 18),
+  
+  axis.title.x = element_text(size = 20, hjust = 1),
+  axis.title.y = element_text(size = 20),
+  axis.text = element_text(size = 14))
 ```
 
 ```{r}
@@ -225,7 +232,11 @@ gghistostats(
     title = "Histogram of Wage of Participants",
     subtitle = "This plot shows the distribution of joviality scores - which seems to be right skewed. "
   ) +
-  theme_minimal()
+  theme_minimal() + theme(plot.title = element_text(face = "bold", size = 24), plot.subtitle = element_text(size = 18),
+  
+  axis.title.x = element_text(size = 20, hjust = 1),
+  axis.title.y = element_text(size = 20),
+  axis.text = element_text(size = 14))
 ```
 This chart shows that the distribution of wages among participants is right skewed.
 
@@ -237,15 +248,15 @@ ggplot(data=df1,
   geom_smooth(size=0.5) + 
   theme_minimal() +
   
-    labs(title = 'Scatterplot of Joviality levels by Wage with Smoothing Line',
+    labs(title = 'Scatterplot of Joviality levels by Wage with Smoothing Line', subtitle = 'As wage increases, joviality decreases across the different educational levels but is distorted by outliers',
        y = "Joviality",
        x = "Wage") +
   
-  theme(plot.title = element_text(face = "bold", size = 12),
+  theme(plot.title = element_text(face = "bold", size = 24), plot.subtitle = element_text(size = 18),
   
-  axis.title.x = element_text(size = 10, hjust = 1),
-  axis.title.y = element_text(size = 10),
-  axis.text = element_text(size = 8))
+  axis.title.x = element_text(size = 20, hjust = 1),
+  axis.title.y = element_text(size = 20),
+  axis.text = element_text(size = 14))
 ```
 
 Together with the histogram above, this chart above show that there are outliers in the data, where a number of yearly wage for individuals amount to \<\$3000. This is unusual. However, further investigation showed that these individuals were had household sizes of 2 or more, with those having household sizes of 3 were consistent with having kids. The logical explanation for this is that these are individuals who are married, and are either house-wives or house-husbands. The wage that is deposited into their accounts could be welfare from the state. As such, for future wage-related analysis, these outliers would be omitted.
@@ -266,30 +277,22 @@ ggplot(data=df2,
   geom_smooth(size=0.5) +
   theme_minimal() +
   
-    labs(title = 'Scatterplot of Joviality levels by Wage with Smoothing Line',
+    labs(title = 'Scatterplot of Joviality levels by Wage with Smoothing Line', subtitle = 'A clearer view of how as wage increases, joviality decreases across the different educational level is shown in this chart',
        y = "Joviality",
        x = "Wage") +
   
-  theme(plot.title = element_text(face = "bold", size = 12),
+  theme(plot.title = element_text(face = "bold", size = 24), plot.subtitle = element_text(size = 18),
   
-  axis.title.x = element_text(size = 10, hjust = 1),
-  axis.title.y = element_text(size = 10),
-  axis.text = element_text(size = 8))
+  axis.title.x = element_text(size = 20, hjust = 1),
+  axis.title.y = element_text(size = 20),
+  axis.text = element_text(size = 14))
 ```
 
 This chart shows an interesting trend that is somewhat counter-intuitive: it seems that wage has a diminishing returns in joviality scores as wage increases across the education levels. It initially increases or starts off high as wage increases, before gradually slowing.
 
-## **3.2 Confirmatory Data Analysis**
+## **3.2 Confirmatory Data Analysis and Insights**
 
-Normality Assumption Before performing the necessary hypothesis testing, we need to choose between parametric and non-parametric test. As such nortest::ad.test() will be used to perform Anderson-Darling test with confidence level of 95% to test the null hypothesis that the following data sets are normally distributed:
-
-1.  Wage by Education Level
-2.  Joviality by Wage
-3.  Joviality by Education Level
-4.  Joviality by HaveKids / Household Size
-5.  Joviality by Recreation for different household Sizes
-
-### 3.2.1 Normality Tests
+### **3.2.1 Normality Tests**
 
 Given that joviality is the target variable, we perform the normality test on joviality scores of the participants:
 
@@ -301,7 +304,16 @@ H1: The sample joviality data is significantly different from a normal populatio
 qq <- ggplot(df1, 
        aes(sample=joviality)) +
   stat_qq() +
-  stat_qq_line()
+  stat_qq_line() + theme_minimal() +
+    labs(title = 'Normality test using QQ plot of the Joviality variable', subtitle = 'Joviality does not follow a normal distribution',
+       y = "Joviality",
+       x = "Wage") +
+  
+  theme(plot.title = element_text(face = "bold", size = 24), plot.subtitle = element_text(size = 18),
+  
+  axis.title.x = element_text(size = 20, hjust = 1),
+  axis.title.y = element_text(size = 20),
+  axis.text = element_text(size = 14))
 
 sw_t <- df1 %>%
   shapiro_test(joviality) %>%
@@ -311,12 +323,12 @@ tmp <- tempfile(fileext = '.png')
 gtsave(sw_t, tmp)
 table_png <- png::readPNG(tmp, native = TRUE)
 
-qq + table_png
+qq + table_png 
 
 ```
 Based on the result above, the null hypothesis is rejected as the p-value below 0.05 critical value. As such, we are not able to confirm normality assumption for distribution of joviality as a target variable and future test would be non-parametric
 
-### 3.2.2 Regression Model with Joviality as the Target Variable
+### **3.2.2 Regression Model with Joviality as the Target Variable**
 
 ```{r}
 # Linear Regression Models with Joviality as the Target Variable
@@ -327,38 +339,9 @@ check_c <- check_collinearity(model)
 plot(check_c)
 ```
 
+In checking the collinearity, we determine which independent variables have correlation with the target variable joviality. As such, two variables 'haveKids' and 'householdSize' are deemed to have medium collinearity with joviality. 
 
-```{r}
-ggscatterstats(
-  data = df,
-  x = Recreation,
-  y = joviality,
-  marginal = FALSE,
-  )
-```
-
-```{r}
-set.seed(123)
-
-# creating a plot
-p <- ggscatterstats(
-  df2,
-  x = Wage,
-  y = joviality,
-  #label.var = educationLevel
-  #label.expression = Sepal.Length > 7.6
-) +
-  ggplot2::geom_rug(sides = "b")
-
-# looking at the plot
-p
-
-
-# extracting details from statistical tests
-extract_stats(p)
-
-```
-### Significance of Education Level on Joviality 
+### **3.2.3 Significance of Education Level on Joviality** 
 
 Using the violin plot charts visually depict the one-way annova test done on the variances in joviality among different educational level, we find that there is a statistical difference between the means of the different educational level group, with higher education levels having higher mean joviality scores. Intuitively, looking at the mean wages across the different educational level, the one-way annova test reveal that they are also statisically different, with higher educational levels, having higher mean wages. 
 
@@ -398,15 +381,19 @@ p2 <- ggbetweenstats(
 p2 + plot_annotation(
   title = 'One-way Annova of Joviality across different Education Levels',
   subtitle = 'There is significant difference between joviality of individuals of the different education levels, with more highly educated individuals having a higher likelihood of greater joviality',
-  theme = theme(plot.title = element_text(face = "bold", size = 18)))
+  theme = theme(plot.title = element_text(face = "bold", size = 24), plot.subtitle = element_text(size = 18), axis.title.x = element_text(size = 20, hjust = 1),
+  axis.title.y = element_text(size = 20),
+  axis.text = element_text(size = 14)))
 
 p1 + plot_annotation(
   title = 'One-way Annova of Yearly Wage across different Education Levels',
   subtitle = 'There is significant difference between the yearly wage of individuals of the different education levels, with more highly educated individuals having a higher likelihood of better wages',
-  theme = theme(plot.title = element_text(face = "bold", size = 18)))
-
+  theme = theme(plot.title = element_text(face = "bold", size = 24), plot.subtitle = element_text(size = 18), axis.title.x = element_text(size = 20, hjust = 1),
+  axis.title.y = element_text(size = 20),
+  axis.text = element_text(size = 14)))
 
 ```
+
 However, the following chart (repeated from the EDA done above) shows a diminishing relationship - as wages increases, the joviality score decreases. 
 
 ```{r}
@@ -421,75 +408,54 @@ ggplot(data=df2,
        y = "Joviality",
        x = "Wage") +
   
-  theme(plot.title = element_text(face = "bold", size = 12),
+  theme(plot.title = element_text(face = "bold", size = 24), plot.subtitle = element_text(size = 18),
   
-  axis.title.x = element_text(size = 10, hjust = 1),
-  axis.title.y = element_text(size = 10),
-  axis.text = element_text(size = 8))
+  axis.title.x = element_text(size = 20, hjust = 1),
+  axis.title.y = element_text(size = 20),
+  axis.text = element_text(size = 14))
 ```
 
 ::: callout-Important
+**Insight**
+
 1.  City Planners should encourage residents to continually improve themselves, attaining the highest possible education level as possible. This can be done through subsidies for education, and well as policies to encourage workers in the workforce to upgrade themselves.
 
 2. Chasing higher wages would not necessarily improve joviality. Therefore city planners should be cognisant of that in planning socio-economic policies - protecting and improving the lives of the bottom of society should be the focus rather than the middle to high income earners. 
 
 :::
 
+### **3.2.4 Significance of Shelter on Joviality** 
 
 ```{r}
-# looking at the difference betwwen joviality by household size - there are differences
-ggbetweenstats(
-  data = df,
-  x = householdSize, 
-  y = joviality)+
-  theme_minimal()
-```
-
-```{r}
-# looking at the difference between joviality by household size - not much difference
-ggbetweenstats(
-  data = df,
-  x = haveKids, 
-  y = joviality,
-  grouping.var= category,
-  type = "np",
-  mean.ci = TRUE, 
-  pairwise.comparisons = TRUE, 
-  pairwise.display = "s",
-  p.adjust.method = "fdr",
-  messages = FALSE,
-  title = "Differences in jovility between parents and non-parents",
-  package = "ggthemes", palette = "Tableau_10"
-)
-```
-
-```{r}
-# Filter the data based on the desired education level
-ggplot(data=df1, 
-            aes(x = Wage,
-                y = joviality, color = haveKids)) +
-  geom_point(size=1) + geom_smooth(data=df1, aes(x = Wage,
-                y = joviality, color = haveKids)) + 
-  coord_cartesian(xlim=c(0,180000),
+z <- ggplot(data=df2, 
+            aes(x = Shelter,
+                y = joviality, color = householdSize, palette = "Tableau_10", size = RentAdjustment)) + 
+  geom_point() +
+  coord_cartesian(xlim=c(-20000,0),
                   ylim=c(0,1)) +
-  facet_wrap(~ educationLevel, nrow = 4)
+  theme_minimal() + 
+  labs(title = 'Interactive Plot of Expenditure on Shelter vs Joviality by Household Size (color) and Rent Adjustment (size)',
+  x = "Expenditure on Shelter",
+  y = "Joviality Level") +
+  
+  theme(plot.title = element_text(face = "bold", size = 18), plot.subtitle = element_text(size = 18),
+  
+  axis.title.x = element_text(size = 20, hjust = 1),
+  axis.title.y = element_text(size = 20),
+  axis.text = element_text(size = 14)) 
 
+ggplotly(z)
 ```
 
-```{r}
-# Visual for Significant Test of Association between education level and joviality
-df_mutated <- df1 %>% 
-  mutate(joviality_bins = 
-           cut(joviality, 
-               breaks = c(0,0.25,0.5,0.75,100))
-)
+:::callout-note
 
-ggbarstats(df_mutated, 
-           x = joviality_bins, 
-           y = educationLevel)
-```
+**Insight**
+1. With Rent Adjustment values seemingly associated with high joviality, especially those who spendd significantly on Shelter to house their larger families, city planners can rework the disbursement of rent adjustment for individuals with larger families (especially those with lower incomes), to reduce the financial burden, and improve joviality among its residents.
+:::
 
-### Significance of Expenditure on Recreation on Joviality
+
+
+### **3.2.5 Significance of Expenditure on Recreation on Joviality**
 
 ```{r}
 ggscatterstats(
@@ -497,7 +463,16 @@ ggscatterstats(
   x = Recreation,
   y = joviality,
   marginal = FALSE,
-  )
+  ) + theme_minimal() + 
+    labs(title = 'Correlation between Expenditure on Recreation and Jovaility', subtitle = 'This chart shows that there is a 0.39 correlation between expenditure on recreation and joviality',
+       y = "Joviality",
+       x = "Recreation") +
+  
+  theme(plot.title = element_text(face = "bold", size = 24), plot.subtitle = element_text(size = 18),
+  
+  axis.title.x = element_text(size = 20, hjust = 1),
+  axis.title.y = element_text(size = 20),
+  axis.text = element_text(size = 14))
 ```
 While the above chart shows that there is a positive correlation between expenditure on recreation and joviality, we need to further divide the data to gain insights of greater fidelity.
 
@@ -510,17 +485,31 @@ ggscatterstats(
   x = Recreation,
   y = joviality,
 
-) +
+) + theme_minimal() + 
+    labs(title = 'Correlation between Expenditure on Reacreation and Jovaility by household size', subtitle = 'This chart shows the positive correlation between expenditure on recreation and joviality drops as household size increases',
+       y = "Joviality",
+       x = "Recreation") +
   ggplot2::geom_rug(sides = "b") + 
-  facet_wrap(vars(householdSize))
+  facet_wrap(vars(householdSize)) + theme(plot.title = element_text(face = "bold", size = 24), plot.subtitle = element_text(size = 18),
+  
+  axis.title.x = element_text(size = 20, hjust = 1),
+  axis.title.y = element_text(size = 20),
+  axis.text = element_text(size = 14))
 
 ```
 Spiltting the data by household size, this chart show comparing joviality against expenditure on recreation across the different household sizes show that there are diminishing effect on joviality for expenditure on recreation as the household size increases.
 
-### Significance of Interest Group on Joviality
+::: callout-Important
+**Insight**
+
+1.  To improve the joviality level of singles, city planners can portion fund to build recreational facilities or encourage business owners to offer singles-friendly activities for this group of individuals to spend on recreation
+
+:::
+
+### **3.2.6 Significance of Interest Group on Joviality**
 
 ```{r}
-# Visual for Significant Test of Association between Interest Group and Joviality
+# Visual for Significant Test of Association between Interest Group and Joviality bins
 df_interest <- df1 %>% 
   mutate(joviality_bins = 
            cut(joviality, 
@@ -530,47 +519,91 @@ df_interest <- df1 %>%
 
 ggbarstats(df_interest, 
            x = joviality_bins, 
-           y = interestGroup)
+           y = interestGroup) +
+    theme_minimal() + 
+    labs(title = 'Significant test of Association Joviality levels across Interest Groups', subtitle = 'This plot show that there are differences in proportion of binned joviality levels between the participants of the different interest groups',
+       y = "Joviality",
+       x = "Interest Group") +
+  
+  theme(plot.title = element_text(face = "bold", size = 24), plot.subtitle = element_text(size = 18),
+  
+  axis.title.x = element_text(size = 20, hjust = 1),
+  axis.title.y = element_text(size = 20),
+  axis.text = element_text(size = 14))
 ```
 
 With approximately an equal spread of participants across the various interest group, this visual explores the association between Interest Group and Joviality. Joviality values are binned into 4 equal group, with higher Joviality as more desirable. It is immediately apparent that two interest groups (C and E) are standouts with higher percentages of very high joviality (\>0.75) in green.
 
 ```{r}
-# looking at the difference betwwen joviality by interest group - there are differences
+# looking at the difference between joviality by interest group - there are differences
 ggbetweenstats(
   data = df,
   x = interestGroup, 
-  y = joviality)+
-  theme_minimal()
+  y = joviality, palette = 'Paired') +
+  theme_minimal() + 
+    labs(title = 'One-way Annova of Joviality levels across Interest Groups', subtitle = 'This plot show that there is a statistically significant variance for joviality between the participants of the different interest groups',
+       y = "Joviality",
+       x = "Interest Group") +
+  
+  theme(plot.title = element_text(face = "bold", size = 24), plot.subtitle = element_text(size = 18),
+  
+  axis.title.x = element_text(size = 20, hjust = 1),
+  axis.title.y = element_text(size = 20),
+  axis.text = element_text(size = 14))
+
 ```
 
 ```{r}
+t2.rect1 <- data.frame (xmin=0, xmax=0.5, ymin=-Inf, ymax=Inf)
+
 ggplot(df1, aes(x = joviality, y = interestGroup, fill = educationLevel)) +
   geom_density_ridges(alpha=0.6) +
   theme_ridges() + 
-  theme() + plot_annotation ()
+  theme_minimal() + geom_rect(data=t2.rect1, aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax), fill="red", alpha=0.25, inherit.aes = FALSE) +
+  
+    labs(title = 'Ridgeplot of Joviality levels by Education Level across Interest Groups', subtitle = 'This plot helps us visualise the peaks in the lower joviality segments of society across education levels and interest groups',
+       y = "Interest Group",
+       x = "Joviality") +
+  
+  theme(plot.title = element_text(face = "bold", size = 24), plot.subtitle = element_text(size = 18),
+  
+  axis.title.x = element_text(size = 20, hjust = 1),
+  axis.title.y = element_text(size = 20),
+  axis.text = element_text(size = 14))
 
 ggbarstats(df1, 
            x = educationLevel, 
-           y = interestGroup)
+           y = interestGroup) +
+  
+    labs(title = 'Plot of Significant Test of Association between Interest Group for different Education Levels', subtitle = 'This plot helps us visualise the proportions of Education Level segments across education levels and interest groups',
+       y = "Proportion",
+       x = "Interest Group") +
+  theme(plot.title = element_text(face = "bold", size = 24), plot.subtitle = element_text(size = 18),
+  
+  axis.title.x = element_text(size = 20, hjust = 1),
+  axis.title.y = element_text(size = 20),
+  axis.text = element_text(size = 14))
 ```
 
-Looking at the ridgeplot above which displays the joviality by interest groups, with the added fidelity of education level, a few patterns are apparent: there are noticeable peaks at the lower joviality levels of 0-0.5. These peaks occur for the segments Graduates in interest Group A, and Low in interest Groups F, G and I.
+Looking at the ridgeplot above which displays the joviality by interest groups, with the added fidelity of education level, a few patterns are apparent: there are noticeable peaks at the lower joviality levels of 0-0.5 (highlighted in the red box). These peaks occur for the segments Graduates in interest Group A and E, Bachelors in interest group H, and Low Education Levels in interest groups F, G and I.
 
 ::: callout-Important
+**Insight**
+
 1.  City Planners can encourage residents to pick up interest groups C and E in a bid to improve Joviality levels. This can be done through subsidies for classes, or building more facilities for the above-mentioned interest groups.
 
-2.  City Planner can monitor and further investigate the following segments of the interest groups A, F, G and I to understand the underlying reasons for the higher percentages of low joviality levels among these segments:
+2.  City Planner can monitor and further investigate the following segments of the interest groups A, E, F, G, H and I to understand the underlying reasons for the higher percentages of low joviality levels among these segments:
 
-    a.  Graduates pursuing Interest Group A
-    b.  Low Education individuals pursuing Interest Group F
-    c.  Low Education individuals pursuing Interest Group G
-    d.  Low Education individuals pursuing Interest Group I
+    a.  Graduates pursuing Interest Group A and E
+    b.  Bachelors pursuing Interest Group H
+    c.  Low Education individuals pursuing Interest Group F
+    d.  Low Education individuals pursuing Interest Group G
+    e.  Low Education individuals pursuing Interest Group I
 
 These segments can then be effectively targeted to encourage them to pursue other interest groups which have higher correlation to higher joviality. Similarly, this can be incentivised through subsidies, grants and/or greater accessibility.
 :::
 
-### **3.2.2 Visualising Uncertainty**
+### **3.2.7 Visualising Uncertainty**
 
 Given that point estimates are not precise representation of the true data value, the following charts will help us to visualise the observed data, displaying the target quantile confidence levels (95%), and that the true (unknown) estimate will lie within this interval.
 
@@ -601,16 +634,18 @@ ggplot(
     aesthetics = "interval_color") +
   
 #Title and subtitle
-  labs(title = 'Visualising uncertainty in median estimates of joviality by Household Size',
+  labs(title = 'Visualising uncertainty in median estimates of Joviality by Household Size',
   subtitle = 'Quantiles intervals (95% and 99%) of joviality levels by household size for the year',
   x = "Household Size",
   y = "Joviality Level") +
   
   theme_hc() +
   
-  theme(plot.title = element_text(face = "bold", size = 18),
-        plot.subtitle = element_text(size = 14),
-        axis.text.x = element_text(angle = 30, hjust = 1))
+  theme(plot.title = element_text(face = "bold", size = 24), plot.subtitle = element_text(size = 18),
+  
+  axis.title.x = element_text(size = 20, hjust = 1),
+  axis.title.y = element_text(size = 20),
+  axis.text = element_text(size = 14))
 ```
 
 This plot shows that while the mean joviality level for married individuals (household size = 2) and married with kid (household size = 3) seems higher by the point estimate, there is an uncertainty associated with it and that it ranges in a band as depicted by the blue bar.
@@ -631,12 +666,19 @@ ggplot(data = df1,
                              group = educationLevel), 
               height = 0.6, 
               color = "#D55E00") +
-  theme_bw() + 
-  transition_states(.draw, 1, 3)
+  theme_bw() + labs(title = 'Visualising uncertainty in median estimates of Joviality by Education Level',
+  subtitle = 'Quantiles intervals (95% and 99%) of joviality levels by education level for the year',
+  x = "Education Level",
+  y = "Joviality Level") +
+  transition_states(.draw, 1, 3)+ theme(plot.title = element_text(face = "bold", size = 24), plot.subtitle = element_text(size = 18),
+  
+  axis.title.x = element_text(size = 20, hjust = 1),
+  axis.title.y = element_text(size = 20),
+  axis.text = element_text(size = 14))
 ```
 
 This plot also depicts the uncertainty involved in the segregating residents of the city by education level, that it cannot be said for certain that education level is a predictor of higher joviality given the uncertainty involved.
 
 # **4. Summary**
 
-The various plots have been useful to visually depict key trends in the data that helps city planners to make decisions.
+The various plots have been useful in visually uncovering hidden trends in the data which will be immensely helpful to the city planners in making sound decisions. The city should continue to collect even more data: over a longer period, and with a larger sample and greater variables, to aid city planners in better decision making in the future.

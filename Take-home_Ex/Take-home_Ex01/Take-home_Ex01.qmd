@@ -448,9 +448,9 @@ ggplotly(z)
 ```
 
 :::callout-note
-
 **Insight**
-1. With Rent Adjustment values seemingly associated with high joviality, especially those who spendd significantly on Shelter to house their larger families, city planners can rework the disbursement of rent adjustment for individuals with larger families (especially those with lower incomes), to reduce the financial burden, and improve joviality among its residents.
+
+1.  With Rent Adjustment values seemingly associated with high joviality, especially those who spendd significantly on Shelter to house their larger families, city planners can rework the disbursement of rent adjustment for individuals with larger families (especially those with lower incomes), to reduce the financial burden, and improve joviality among its residents.
 :::
 
 
@@ -600,7 +600,7 @@ Looking at the ridgeplot above which displays the joviality by interest groups, 
     d.  Low Education individuals pursuing Interest Group G
     e.  Low Education individuals pursuing Interest Group I
 
-These segments can then be effectively targeted to encourage them to pursue other interest groups which have higher correlation to higher joviality. Similarly, this can be incentivised through subsidies, grants and/or greater accessibility.
+  These segments can then be effectively targeted to encourage them to pursue other interest groups which have higher correlation to higher joviality. Similarly, this can be incentivised through subsidies, grants and/or greater accessibility.
 :::
 
 ### **3.2.7 Visualising Uncertainty**

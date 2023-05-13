@@ -28,6 +28,7 @@ pacman::p_load(tidyverse, ggrepel, ggthemes, hrbrthemes, patchwork)
 ```{r}
 exam_data <- read_csv("data/Exam_data.csv")
 ```
+
 ## Examining the data
 
 ```{r}
@@ -70,6 +71,7 @@ ggplot(data=exam_data,
                   ylim=c(0,100)) +
   ggtitle("English scores versus Maths scores for Primary 3")
 ```
+
 # Beyond ggplot2 Themes
 
 ggplot2 comes with eight built-in themes, they are: theme_gray(), theme_bw(), theme_classic(), theme_dark(), theme_light(), theme_linedraw(), theme_minimal(), and theme_void().
@@ -134,9 +136,9 @@ ggplot(data=exam_data,
 
 ### Plotting the distribution of Math scores using theme_ipsum() but changing the text sizes and grid lines
 
-1. axis_title_size argument is used to increase the font size of the axis title to 18,
-2. base_size argument is used to increase the default axis label to 15, and
-3. grid argument is used to remove the x-axis grid lines.
+1.  axis_title_size argument is used to increase the font size of the axis title to 18,
+2.  base_size argument is used to increase the default axis label to 15, and
+3.  grid argument is used to remove the x-axis grid lines.
 
 ```{r}
 ggplot(data=exam_data, 
@@ -181,7 +183,7 @@ p2 <- ggplot(data=exam_data,
   ggtitle("Distribution of English scores")
 ```
 
-Lastly, we will draw a scatterplot for English score versus Maths score by as shown below 
+Lastly, we will draw a scatterplot for English score versus Maths score by as shown below
 
 ```{r}
 p3 <- ggplot(data=exam_data, 
@@ -202,15 +204,15 @@ p3 <- ggplot(data=exam_data,
 ```{r}
 p1 + p2
 ```
+
 ### Combining three ggplot2 graphs
 
-“|” operator to stack two ggplot2 graphs,
-“/” operator to place the plots beside each other,
-“()” operator the define the sequence of the plotting.
+"\|" operator to stack two ggplot2 graphs, "/" operator to place the plots beside each other, "()" operator the define the sequence of the plotting.
 
 ```{r}
 (p1/p2) | p3
 ```
+
 ### Creating a composite figure with tag
 
 ```{r}
@@ -235,7 +237,3 @@ Creating a composite figure by using patchwork and theme_economist() of ggtheme
 patchwork <- (p1 / p2) | p3
 patchwork & theme_economist()
 ```
-
-
-
-

@@ -18,8 +18,9 @@ The code chunk below uses p_load() of pacman package to check if tidyverse packa
 pacman::p_load(tidyverse)
 ```
 
-```{r setup, include=FALSE} 
-knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+ 
 ```
 
 ## Importing the data

@@ -2,26 +2,37 @@
 title: "Take-home Exercise 1"
 author: "Shaun Tan"
 date: "5/1/2023"
+execute:
+  warning: False
 format:
   html:
+    grid: 
+      body-width: 5000px
+      sidebar-width: 200px
+      margin-width: 200px
+    toc: true
     code-fold: true
     code-summary: "Show the code"
 ---
 
-# 1. Overview
+```{r}
+knitr::opts_chunk$set(fig.width=14, fig.height = 14 * 0.618)
+```
+
+# **1. Overview**
 
 City of Engagement, with a total population of 50,000, is a small city located at Country of Nowhere. The city serves as a service centre of an agriculture region surrounding the city. The main agriculture of the region is fruit farms and vineyards. The local council of the city is in the process of preparing the Local Plan 2023. A sample survey of 1000 representative residents had been conducted to collect data related to their household demographic and spending patterns, among other things. The city aims to use the data to assist with their major community revitalization efforts, including how to allocate a very large city renewal grant they have recently received.
 
-## 1.1 The Task
+## **1.1 The Task**
 
 The task is to apply the appropriate visual analytics concepts and methods to reveal the demographic and financial characteristics of the city of Engagement, using appropriate static and interactive statistical graphics methods. This exercise requires a user-friendly and interactive solution that helps city managers and planners to explore the complex data in an engaging way and reveal hidden patterns. The data should be processed by using appropriate tidyverse family of packages and the statistical graphics must be prepared using ggplot2 and its extensions.
 
-## 1.2 The Data
+## **1.2 The Data**
 
 *Participants.csv* contains information about the residents of City of Engagement that have agreed to participate in this study. The data consist of 1,011 rows and 7 columns.
 
 | Columns                        | Description                                                                                                                                                                                        |
-|------------------------------------|------------------------------------|
+|---------------|---------------------------------------------------------|
 | participantId (integer)        | unique ID assigned to each participant                                                                                                                                                             |
 | householdSize (integer)        | the number of people in the participant's household                                                                                                                                                |
 | haveKids (boolean)             | whether there are children living in the participant's household                                                                                                                                   |
@@ -33,33 +44,33 @@ The task is to apply the appropriate visual analytics concepts and methods to re
 *FinancialJournal.csv* contains information about financial transactions of the participants. The data consist of 1,513,636 rows and 4 columns.
 
 | Columns                  | Description                                                                                                               |
-|------------------|------------------------------------------------------|
+|----------------|--------------------------------------------------------|
 | participantId (integer)  | unique ID corresponding to the participant affected                                                                       |
 | timestamp (datetime)     | the time when the check-in was logged                                                                                     |
 | category (string factor) | a string describing the expense category, one of {"Education", "Food", "Recreation", "RentAdjustment", "Shelter", "Wage"} |
 | amount (double)          | the amount of the transaction                                                                                             |
 
-# 
+# **2. Data Wrangling and Preparation**
 
-2.  Data Wrangling and Preparation
-
-## 2.1 Installing and launching requisite R packages
+## **2.1 Installing and launching requisite R packages**
 
 The code chunk below uses p_load() of pacman package to check if tidyverse packages are installed on the computer. If they are, then they will be launched into R.
 
 ```{r}
-pacman::p_load(ggstatsplot, ggthemes, psych, plotly, corrplot, lubridate, ggpubr, plotly, treemap, d3treeR, hrbrthemes, ggrepel, RColorBrewer, gganimate, viridis, ggridges, ggrepel, testthat, hmisc, tidyverse, dplyr, gapminder, ggiraph, patchwork, DT)
-
+pacman::p_load(ggstatsplot, ggplot2, ggthemes, psych, plotly, corrplot, lubridate, ggpubr, plotly, hrbrthemes, ggrepel, RColorBrewer, gganimate, viridis, ggridges, ggrepel, testthat, hmisc, tidyverse, dplyr, gapminder, ggiraph, patchwork, DT, readxl, performance, parameters, see, ungeviz, plotly, crosstalk, ggdist, gganimate, gt, rstatix, png, webshot2)
 ```
 
-knitr::opts_chunk\$set(warning = FALSE, message = FALSE)
+## **2.2 Importing the data**
 
-## 2.2 Importing the data
-
+The two datasets were imported using the following code:
 ```{r}
 financial_data <- read_csv("data/FinancialJournal.csv")
 participants <- read_csv("data/Participants.csv")
 ```
+
+## **2.3 Exploring the data**
+
+The describe function from the Psych library is used to describe the two data sets.
 
 ```{r}
 psych::describe(participants)
@@ -67,84 +78,297 @@ psych::describe(participants)
 
 ```{r}
 psych::describe(financial_data)
-head(financial_data)
 ```
 
-```{r}
-summary(financial_data)
-```
-
-Checking for missing values
+Checking for missing values:
 
 ```{r}
 any(is.na(financial_data))
+any(is.na(participants))
 ```
 
+We find that both data sets are devoid of missing values. We next take a look at the top values in the dataframe: 
+
 ```{r}
+head(financial_data)
 head(participants)
 ```
 
-## **2.3 Data Prep**
 
-Issues with the data:
+::: callout-note
+Observed Issues with the Data
 
 1.  The column "timestamp" in financialJournal.csv constains timestamps of financial transactions from 1 Mar 2022 till 28 Feb 2023 - one year's worth of data. The time would be irrelevant and therefore the month and year would be extracted.
 
-2.  EducationLevel column in participants.csv should be ordinal, in the following order:
+2.  Error is data types:
 
-    a.  Graduate
-    b.  Bachelors
-    c.  HighSchoolorCollege
-    d.  Low
+<!-- -->
 
-3.  
+a.  Education Level column in participants.csv should be ordinal, in the following order: Low\<HighSchoolorCollege\<Bachelors\<Graduate
+b.  ParticipantID, householdSize, Age should be formatted as integers
+c.  Joviality should be formatted as float
+d.  HaveKids should be formatted as a boolean
+:::
 
-```{r}
-#Extracting the Date from the Timestamp data
-financial_data$Month_Yr <- as.Date(financial_data$timestamp, "%Y-%m")
-#financial_data_cleaned$date_component <- as.Date(financial_data$timestamp,'%Y-%m-%d')
-financial_data
-```
+## **2.4 Data Prep**
+
+Data Preparation in R: The two data sets are first merged matching "participantID", then data type corrected, before creating a new month-year date column.
 
 ```{r}
-#Making Education Level ordinal
-#participants$educationLevel <- factor(participants$educationLevel, order = FALSE) 
-```
-
-```{r}
-#Merging Dataframes
+# The two datasets are first merged into a single dataframe: merged_data
 merged_data <- merge(financial_data, participants, by = "participantId")
-merged_data
+
+# The data type errors listed above are corrected and saved into a new dataframe: merged_data_cleaned
+merged_data_cleaned <- merged_data %>%
+
+  # Correcting Column Data formats
+  mutate(participantId = as.integer(participantId),
+         householdSize = as.integer(householdSize),
+         joviality = as.numeric(joviality),
+         age = as.integer(age),
+         # Changing data type to ordinal string factor
+         educationLevel = factor(educationLevel, 
+                                 levels = c("Low", "HighSchoolOrCollege", "Bachelors", "Graduate"),
+                                 ordered = TRUE),
+         # Changing data type to boolean
+         haveKids = as.logical(haveKids),
+         # Mutatating data from date time to just mth-year
+         month_year = format(as.Date(timestamp), "%m-%Y"))
+```
+
+However, for clearer analysis, the transaction are summed across the various months to give the total monthly transaction amount and the resultant data frame saved as "df":
+
+```{r}
+# Summation of each participant's monthly expenditure/income 
+merged_data_summed <- merged_data_cleaned %>%
+  group_by(participantId, month_year, category) %>%
+  summarize(total_amount = sum(amount)) %>%
+  ungroup()
+
+# Pivot the category column to become columns on its own
+Monthly_expenditure <- merged_data_summed %>% 
+  pivot_wider(names_from = category, values_from = total_amount, values_fill = 0)
+
+df <- Monthly_expenditure %>%
+  left_join(merged_data_cleaned %>% distinct(participantId, householdSize, haveKids, age, educationLevel, interestGroup, joviality), by = "participantId")
+
+head(df)
+```
+
+The dataframe is further manipulated (summed across the month to get yearly transaction amounts) to display the yearly expenditure/income and saved as df1:
+
+```{r}
+# Creating a new dataframe that displays the yearly expenditure/income
+df1 <- df %>%
+  group_by(participantId) %>%
+  summarise(Education = sum(Education),
+            Food = sum(Food),
+            Recreation = sum(Recreation),
+            Shelter = sum(Shelter),
+            Wage = sum(Wage), RentAdjustment = sum(RentAdjustment), .groups = 'drop') %>%
+  left_join(df %>% distinct(participantId, householdSize, haveKids, age, educationLevel, interestGroup, joviality), by = "participantId")
+
+head(df1)
+```
+
+# **3. Visual Data Analysis**
+
+## **3.1 Exploratory Data Analysis**
+
+Given the task which is to use the data to assist city planners in disbursing a large city renewal grant for major community revitalization efforts, appropriate static and interactive statistical graphics methods would be applied to the data to explore the complex data in an engaging way and reveal hidden patterns.
+
+A look at the distribution of the data with joviality as the target variable.
+```{r}
+ggplot(df1) +
+  aes(x = joviality) +
+  geom_histogram(bins = 60L, fill = "#112446") +
+  labs(
+    x = "Joviality",
+    y = "Count of Participants",
+    title = "Histogram of Joviality of Participants",
+    subtitle = "This plot shows the distribution of joviality scores - which seems to be uniformly distributed. "
+  ) +
+  theme_minimal()
+```
+```{r}
+set.seed(1234)
+
+gghistostats(
+  data = df1,
+  x = joviality,
+  type = "bayes",
+  test.value = 50,
+  xlab = "Joviality"
+) +
+  labs(
+    x = "Joviality",
+    y = "Count of Participants",
+    title = "Histogram of Joviality of Participants",
+    subtitle = "This plot shows the distribution of joviality scores - which seems to be uniformly distributed. "
+  ) +
+  theme_minimal()
 ```
 
 ```{r}
-#Filter required data
-df1 <- merged_data %>%
-  select("participantId", "category", "amount", "Month_Yr", "householdSize", 
-         "haveKids", "age", "educationLevel", "interestGroup", "joviality")
+set.seed(1234)
+
+gghistostats(
+  data = df1,
+  x = Wage,
+  type = "bayes",
+  test.value = 60,
+  xlab = "Wage"
+) +
+  labs(
+    x = "Wage",
+    y = "Count of Participants",
+    title = "Histogram of Wage of Participants",
+    subtitle = "This plot shows the distribution of joviality scores - which seems to be right skewed. "
+  ) +
+  theme_minimal()
+```
+This chart shows that the distribution of wages among participants is right skewed.
+
+```{r}
+ggplot(data=df1, 
+       aes(x= Wage, 
+           y=joviality, color = educationLevel)) +
+  geom_point() +
+  geom_smooth(size=0.5) + 
+  theme_minimal() +
+  
+    labs(title = 'Scatterplot of Joviality levels by Wage with Smoothing Line',
+       y = "Joviality",
+       x = "Wage") +
+  
+  theme(plot.title = element_text(face = "bold", size = 12),
+  
+  axis.title.x = element_text(size = 10, hjust = 1),
+  axis.title.y = element_text(size = 10),
+  axis.text = element_text(size = 8))
+```
+
+Together with the histogram above, this chart above show that there are outliers in the data, where a number of yearly wage for individuals amount to \<\$3000. This is unusual. However, further investigation showed that these individuals were had household sizes of 2 or more, with those having household sizes of 3 were consistent with having kids. The logical explanation for this is that these are individuals who are married, and are either house-wives or house-husbands. The wage that is deposited into their accounts could be welfare from the state. As such, for future wage-related analysis, these outliers would be omitted.
+
+```{r}
+# Filtering outliers
+df2 <- df1 %>%
+           filter ((Wage >= 3000))
+```
+
+After the outliers have been removed, the following chart shows a clearer picture of the trend between wage and joviality:
+
+```{r}
+ggplot(data=df2, 
+       aes(x= Wage, 
+           y=joviality, color = educationLevel)) +
+  geom_point() +
+  geom_smooth(size=0.5) +
+  theme_minimal() +
+  
+    labs(title = 'Scatterplot of Joviality levels by Wage with Smoothing Line',
+       y = "Joviality",
+       x = "Wage") +
+  
+  theme(plot.title = element_text(face = "bold", size = 12),
+  
+  axis.title.x = element_text(size = 10, hjust = 1),
+  axis.title.y = element_text(size = 10),
+  axis.text = element_text(size = 8))
+```
+
+This chart shows an interesting trend that is somewhat counter-intuitive: it seems that wage has a diminishing returns in joviality scores as wage increases across the education levels. It initially increases or starts off high as wage increases, before gradually slowing.
+
+## **3.2 Confirmatory Data Analysis**
+
+Normality Assumption Before performing the necessary hypothesis testing, we need to choose between parametric and non-parametric test. As such nortest::ad.test() will be used to perform Anderson-Darling test with confidence level of 95% to test the null hypothesis that the following data sets are normally distributed:
+
+1.  Wage by Education Level
+2.  Joviality by Wage
+3.  Joviality by Education Level
+4.  Joviality by HaveKids / Household Size
+5.  Joviality by Recreation for different household Sizes
+
+### 3.2.1 Normality Tests
+
+Given that joviality is the target variable, we perform the normality test on joviality scores of the participants:
+
+H0: The sample joviality data is not significantly different from a normal population
+
+H1: The sample joviality data is significantly different from a normal population
+
+```{r}
+qq <- ggplot(df1, 
+       aes(sample=joviality)) +
+  stat_qq() +
+  stat_qq_line()
+
+sw_t <- df1 %>%
+  shapiro_test(joviality) %>%
+  gt()
+
+tmp <- tempfile(fileext = '.png')
+gtsave(sw_t, tmp)
+table_png <- png::readPNG(tmp, native = TRUE)
+
+qq + table_png
+
+```
+Based on the result above, the null hypothesis is rejected as the p-value below 0.05 critical value. As such, we are not able to confirm normality assumption for distribution of joviality as a target variable and future test would be non-parametric
+
+### 3.2.2 Regression Model with Joviality as the Target Variable
+
+```{r}
+# Linear Regression Models with Joviality as the Target Variable
+model <- lm(joviality ~ Education + Food + Recreation + 
+              Shelter + Wage + RentAdjustment + householdSize + haveKids + age + educationLevel + interestGroup, data = df)
+
+check_c <- check_collinearity(model)
+plot(check_c)
+```
 
 
-
-yearly_financials <- df1 %>%
-  group_by(participantId, category) %>% 
-  summarise(Total = sum(amount), householdSize = unique(householdSize), haveKids = unique(haveKids), age = unique(age), educationLevel = unique(educationLevel), interestGroup = unique(interestGroup), joviality = unique(joviality))
-
-yearly_financials
+```{r}
+ggscatterstats(
+  data = df,
+  x = Recreation,
+  y = joviality,
+  marginal = FALSE,
+  )
 ```
 
 ```{r}
-Net_savings <- yearly_financials %>%
-  group_by(participantId) %>% 
-  summarise(Total_Savings = sum(Total), householdSize = unique(householdSize), haveKids = unique(haveKids), age = unique(age), educationLevel = unique(educationLevel), interestGroup = unique(interestGroup), joviality = unique(joviality))
+set.seed(123)
 
-Net_savings
+# creating a plot
+p <- ggscatterstats(
+  df2,
+  x = Wage,
+  y = joviality,
+  #label.var = educationLevel
+  #label.expression = Sepal.Length > 7.6
+) +
+  ggplot2::geom_rug(sides = "b")
+
+# looking at the plot
+p
+
+
+# extracting details from statistical tests
+extract_stats(p)
+
 ```
+### Significance of Education Level on Joviality 
+
+Using the violin plot charts visually depict the one-way annova test done on the variances in joviality among different educational level, we find that there is a statistical difference between the means of the different educational level group, with higher education levels having higher mean joviality scores. Intuitively, looking at the mean wages across the different educational level, the one-way annova test reveal that they are also statisically different, with higher educational levels, having higher mean wages. 
 
 ```{r}
+# Exploring the Variances between Wages for participants of different education levels
+
 p1 <- ggbetweenstats(
-  data = dplyr::filter(yearly_financials, category %in% c("Wage")),
+  data = df2,
   x = educationLevel, 
-  y = Total,
+  y = Wage,
   grouping.var= category,
   type = "np",
   mean.ci = TRUE, 
@@ -157,9 +381,9 @@ p1 <- ggbetweenstats(
 )
 
 p2 <- ggbetweenstats(
-  data = dplyr::filter(yearly_financials, category %in% c("Shelter")),
+  data = df2,
   x = educationLevel, 
-  y = Total,
+  y = joviality,
   grouping.var= category,
   type = "np",
   mean.ci = TRUE, 
@@ -167,71 +391,252 @@ p2 <- ggbetweenstats(
   pairwise.display = "s",
   p.adjust.method = "fdr",
   messages = FALSE,
-  title = "Differences in Rent Expenditure for different education levels",
-  package = "ggthemes", palette = "Tableau_10")
+  title = "Differences in Joviality for different education levels",
+  package = "ggthemes", palette = "Tableau_10"
+)
 
-p1
+p2 + plot_annotation(
+  title = 'One-way Annova of Joviality across different Education Levels',
+  subtitle = 'There is significant difference between joviality of individuals of the different education levels, with more highly educated individuals having a higher likelihood of greater joviality',
+  theme = theme(plot.title = element_text(face = "bold", size = 18)))
 
-p2
+p1 + plot_annotation(
+  title = 'One-way Annova of Yearly Wage across different Education Levels',
+  subtitle = 'There is significant difference between the yearly wage of individuals of the different education levels, with more highly educated individuals having a higher likelihood of better wages',
+  theme = theme(plot.title = element_text(face = "bold", size = 18)))
+
+
+```
+However, the following chart (repeated from the EDA done above) shows a diminishing relationship - as wages increases, the joviality score decreases. 
+
+```{r}
+ggplot(data=df2, 
+       aes(x= Wage, 
+           y=joviality, color = educationLevel)) +
+  geom_point() +
+  geom_smooth(size=0.5) +
+  theme_minimal() +
+  
+    labs(title = 'Scatterplot of Joviality levels by Wage with Smoothing Line',
+       y = "Joviality",
+       x = "Wage") +
+  
+  theme(plot.title = element_text(face = "bold", size = 12),
+  
+  axis.title.x = element_text(size = 10, hjust = 1),
+  axis.title.y = element_text(size = 10),
+  axis.text = element_text(size = 8))
 ```
 
+::: callout-Important
+1.  City Planners should encourage residents to continually improve themselves, attaining the highest possible education level as possible. This can be done through subsidies for education, and well as policies to encourage workers in the workforce to upgrade themselves.
+
+2. Chasing higher wages would not necessarily improve joviality. Therefore city planners should be cognisant of that in planning socio-economic policies - protecting and improving the lives of the bottom of society should be the focus rather than the middle to high income earners. 
+
+:::
 
 
 ```{r}
-gghistogram(data = dplyr::filter(yearly_financials, category %in% c("Shelter", "Education", "Recreation", "Food")), x = "Total", add = "mean", rug = TRUE,
-   color = "category", fill = "category", palette = "spectral", add_density = TRUE)
+# looking at the difference betwwen joviality by household size - there are differences
+ggbetweenstats(
+  data = df,
+  x = householdSize, 
+  y = joviality)+
+  theme_minimal()
 ```
 
+```{r}
+# looking at the difference between joviality by household size - not much difference
+ggbetweenstats(
+  data = df,
+  x = haveKids, 
+  y = joviality,
+  grouping.var= category,
+  type = "np",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "s",
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Differences in jovility between parents and non-parents",
+  package = "ggthemes", palette = "Tableau_10"
+)
+```
+
+```{r}
+# Filter the data based on the desired education level
+ggplot(data=df1, 
+            aes(x = Wage,
+                y = joviality, color = haveKids)) +
+  geom_point(size=1) + geom_smooth(data=df1, aes(x = Wage,
+                y = joviality, color = haveKids)) + 
+  coord_cartesian(xlim=c(0,180000),
+                  ylim=c(0,1)) +
+  facet_wrap(~ educationLevel, nrow = 4)
+
+```
+
+```{r}
+# Visual for Significant Test of Association between education level and joviality
+df_mutated <- df1 %>% 
+  mutate(joviality_bins = 
+           cut(joviality, 
+               breaks = c(0,0.25,0.5,0.75,100))
+)
+
+ggbarstats(df_mutated, 
+           x = joviality_bins, 
+           y = educationLevel)
+```
+
+### Significance of Expenditure on Recreation on Joviality
+
+```{r}
+ggscatterstats(
+  data = df,
+  x = Recreation,
+  y = joviality,
+  marginal = FALSE,
+  )
+```
+While the above chart shows that there is a positive correlation between expenditure on recreation and joviality, we need to further divide the data to gain insights of greater fidelity.
 
 ```{r}
 set.seed(123)
 
-grouped_gghistostats(
-  data              = dplyr::filter(yearly_financials, category %in% c("Recreation", "Shelter", "Education", "Food")),
-  x                 = Total,
-  test.value        = 50,
-  type              = "nonparametric",
-  xlab              = "Total Expendititure",
-  grouping.var      = category,
-  normal.curve      = TRUE,
-  normal.curve.args = list(color = "red", size = 1),
-  ggtheme           = ggthemes::theme_tufte(),
-  ## modify the defaults from `{ggstatsplot}` for each plot
-  plotgrid.args     = list(nrow = 2),
-  annotation.args   = list(title = "Expenditure for different categories")
+# Plot of joviality vs expenditure on Recreation for Household Sizes 
+ggscatterstats(
+  df1,
+  x = Recreation,
+  y = joviality,
+
+) +
+  ggplot2::geom_rug(sides = "b") + 
+  facet_wrap(vars(householdSize))
+
+```
+Spiltting the data by household size, this chart show comparing joviality against expenditure on recreation across the different household sizes show that there are diminishing effect on joviality for expenditure on recreation as the household size increases.
+
+### Significance of Interest Group on Joviality
+
+```{r}
+# Visual for Significant Test of Association between Interest Group and Joviality
+df_interest <- df1 %>% 
+  mutate(joviality_bins = 
+           cut(joviality, 
+               breaks = c(0,0.25,0.5,0.75,100))
+         
 )
+
+ggbarstats(df_interest, 
+           x = joviality_bins, 
+           y = interestGroup)
 ```
 
+With approximately an equal spread of participants across the various interest group, this visual explores the association between Interest Group and Joviality. Joviality values are binned into 4 equal group, with higher Joviality as more desirable. It is immediately apparent that two interest groups (C and E) are standouts with higher percentages of very high joviality (\>0.75) in green.
 
-set.seed(1234)
+```{r}
+# looking at the difference betwwen joviality by interest group - there are differences
+ggbetweenstats(
+  data = df,
+  x = interestGroup, 
+  y = joviality)+
+  theme_minimal()
+```
 
-gghistostats(
-  data = ggplot2::yearly_financials,
-  x = Total,
-  type = "bayes",
-  test.value = 60,
-  xlab = "Total"
-)
+```{r}
+ggplot(df1, aes(x = joviality, y = interestGroup, fill = educationLevel)) +
+  geom_density_ridges(alpha=0.6) +
+  theme_ridges() + 
+  theme() + plot_annotation ()
 
+ggbarstats(df1, 
+           x = educationLevel, 
+           y = interestGroup)
+```
 
+Looking at the ridgeplot above which displays the joviality by interest groups, with the added fidelity of education level, a few patterns are apparent: there are noticeable peaks at the lower joviality levels of 0-0.5. These peaks occur for the segments Graduates in interest Group A, and Low in interest Groups F, G and I.
 
-Net_savings$tooltip <- c(paste0(     
-  "participant Id = ", Net_savings$participantId,         
-  "\n Education Level = ", Net_savings$educationLevel,
-  "\n Age = ", Net_savings$age)) 
+::: callout-Important
+1.  City Planners can encourage residents to pick up interest groups C and E in a bid to improve Joviality levels. This can be done through subsidies for classes, or building more facilities for the above-mentioned interest groups.
 
-p <- ggplot(data=Net_savings, 
-       aes(x = Total_Savings)) +
-  geom_boxplot_interactive(
-    aes(tooltip = Net_savings$tooltip), 
-    stackgroups = TRUE,
-    binwidth = 1,
-    method = "histodot") +
-  scale_y_continuous(NULL,               
-                     breaks = NULL)
-girafe(
-  ggobj = p,
-  width_svg = 8,
-  height_svg = 8*0.618
-)
+2.  City Planner can monitor and further investigate the following segments of the interest groups A, F, G and I to understand the underlying reasons for the higher percentages of low joviality levels among these segments:
 
+    a.  Graduates pursuing Interest Group A
+    b.  Low Education individuals pursuing Interest Group F
+    c.  Low Education individuals pursuing Interest Group G
+    d.  Low Education individuals pursuing Interest Group I
+
+These segments can then be effectively targeted to encourage them to pursue other interest groups which have higher correlation to higher joviality. Similarly, this can be incentivised through subsidies, grants and/or greater accessibility.
+:::
+
+### **3.2.2 Visualising Uncertainty**
+
+Given that point estimates are not precise representation of the true data value, the following charts will help us to visualise the observed data, displaying the target quantile confidence levels (95%), and that the true (unknown) estimate will lie within this interval.
+
+```{r}
+
+# Base ggplot
+ggplot(
+  data = df1,
+  aes(x = householdSize,
+      y = joviality)) +
+# Adding a gradient interval
+  stat_gradientinterval(   
+    fill = "skyblue",      
+    show.legend = TRUE) +
+  
+# Using stat_pointinterval to plot the points and intervals
+  stat_pointinterval(
+    aes(interval_color = stat(level)),
+    .width = c(0.95, 0.99),
+    .point = median,
+    .interval = qi,
+    point_color = "darkred",
+    show.legend = FALSE) +
+
+# Defining the color of the intervals 
+  scale_color_manual(
+    values = c("blue2", "darkblue"),
+    aesthetics = "interval_color") +
+  
+#Title and subtitle
+  labs(title = 'Visualising uncertainty in median estimates of joviality by Household Size',
+  subtitle = 'Quantiles intervals (95% and 99%) of joviality levels by household size for the year',
+  x = "Household Size",
+  y = "Joviality Level") +
+  
+  theme_hc() +
+  
+  theme(plot.title = element_text(face = "bold", size = 18),
+        plot.subtitle = element_text(size = 14),
+        axis.text.x = element_text(angle = 30, hjust = 1))
+```
+
+This plot shows that while the mean joviality level for married individuals (household size = 2) and married with kid (household size = 3) seems higher by the point estimate, there is an uncertainty associated with it and that it ranges in a band as depicted by the blue bar.
+
+```{r}
+library("ungeviz")
+
+ggplot(data = df1, 
+       (aes(x = factor(educationLevel), 
+            y = joviality))) +
+  geom_point(position = position_jitter(
+    height = 0.3, 
+    width = 0.05), 
+    size = 0.4, 
+    color = "#0072B2", 
+    alpha = 1/2) +
+  geom_hpline(data = sampler(25, 
+                             group = educationLevel), 
+              height = 0.6, 
+              color = "#D55E00") +
+  theme_bw() + 
+  transition_states(.draw, 1, 3)
+```
+
+This plot also depicts the uncertainty involved in the segregating residents of the city by education level, that it cannot be said for certain that education level is a predictor of higher joviality given the uncertainty involved.
+
+# **4. Summary**
+
+The various plots have been useful to visually depict key trends in the data that helps city planners to make decisions.

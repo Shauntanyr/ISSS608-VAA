@@ -123,6 +123,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-submit-button-title": "Submit"
   }
 }</script>
+<script src="../../site_libs/htmlwidgets-1.6.1/htmlwidgets.js"></script>
+<link href="../../site_libs/vis-9.1.0/vis-network.min.css" rel="stylesheet">
+<script src="../../site_libs/vis-9.1.0/vis-network.min.js"></script>
+<script src="../../site_libs/visNetwork-binding-2.1.2/visNetwork.js"></script>
 
 
 <link rel="stylesheet" href="../../styles.css">
@@ -161,6 +165,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex03/Hands-on_Ex03.html">
  <span class="dropdown-text">Hands-on Exercise 3</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex03/Hands-on_Ex06.html">
+ <span class="dropdown-text">Hands-on Exercise 6</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -180,6 +188,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex04/In-class_Ex04.html">
  <span class="dropdown-text">In-class Exercise 4</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex05/In-class_Ex05.html">
+ <span class="dropdown-text">In-class Exercise 5</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -190,6 +202,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         <li>
     <a class="dropdown-item" href="../../Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html">
  <span class="dropdown-text">Take-home Exercise 1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Take-home_Ex/Take-home_Ex01/Take-home_Ex02.html">
+ <span class="dropdown-text">Take-home Exercise 2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Take-home_Ex/Take-home_Ex01/Take-home_Ex03.html">
+ <span class="dropdown-text">Take-home Exercise 3</span></a>
   </li>  
     </ul>
   </li>
@@ -214,7 +234,45 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#the-task" id="toc-the-task" class="nav-link active" data-scroll-target="#the-task">1. The Task</a>
+  <ul class="collapse">
+  <li><a href="#background" id="toc-background" class="nav-link" data-scroll-target="#background">1.1 Background</a></li>
+  <li><a href="#the-task-in-detail" id="toc-the-task-in-detail" class="nav-link" data-scroll-target="#the-task-in-detail">1.2 The Task in detail</a></li>
+  </ul></li>
+  <li><a href="#data-prep" id="toc-data-prep" class="nav-link" data-scroll-target="#data-prep">2. Data Prep</a>
+  <ul class="collapse">
+  <li><a href="#loading-the-requisite-r-libraries" id="toc-loading-the-requisite-r-libraries" class="nav-link" data-scroll-target="#loading-the-requisite-r-libraries">2.1 Loading the requisite R libraries:</a></li>
+  <li><a href="#importing-the-requisite-json-files.-for-minicase-2-there-is-the-large-dataset-mc2-and-the-12-individual-datasets-from-the-bundle-date-of-the-different-individual-fish-species." id="toc-importing-the-requisite-json-files.-for-minicase-2-there-is-the-large-dataset-mc2-and-the-12-individual-datasets-from-the-bundle-date-of-the-different-individual-fish-species." class="nav-link" data-scroll-target="#importing-the-requisite-json-files.-for-minicase-2-there-is-the-large-dataset-mc2-and-the-12-individual-datasets-from-the-bundle-date-of-the-different-individual-fish-species.">2.2 Importing the requisite JSON files. For minicase 2, there is the large dataset “MC2”, and the 12 individual datasets from the bundle date of the different individual fish species.</a></li>
+  <li><a href="#wrangling-the-data" id="toc-wrangling-the-data" class="nav-link" data-scroll-target="#wrangling-the-data">2.3 Wrangling the data:</a>
+  <ul class="collapse">
+  <li><a href="#creating-the-tibble-of-nodes" id="toc-creating-the-tibble-of-nodes" class="nav-link" data-scroll-target="#creating-the-tibble-of-nodes">2.3.1 Creating the tibble of nodes:</a></li>
+  <li><a href="#creating-the-tibble-of-edges-with-cleaning-of-dates-into-month_year-format-then-aggregating-the-edges-by-source-and-target-to-determine-the-weight-of-each-edge.-as-there-were-many-obscure-connections-between-nodes-with-low-frequencies-a-cutoff-set-at-edge-weight-1000-was-arbitrary-set.-this-would-give-us-the-top-100-connections." id="toc-creating-the-tibble-of-edges-with-cleaning-of-dates-into-month_year-format-then-aggregating-the-edges-by-source-and-target-to-determine-the-weight-of-each-edge.-as-there-were-many-obscure-connections-between-nodes-with-low-frequencies-a-cutoff-set-at-edge-weight-1000-was-arbitrary-set.-this-would-give-us-the-top-100-connections." class="nav-link" data-scroll-target="#creating-the-tibble-of-edges-with-cleaning-of-dates-into-month_year-format-then-aggregating-the-edges-by-source-and-target-to-determine-the-weight-of-each-edge.-as-there-were-many-obscure-connections-between-nodes-with-low-frequencies-a-cutoff-set-at-edge-weight-1000-was-arbitrary-set.-this-would-give-us-the-top-100-connections.">2.3.2 Creating the tibble of edges, with cleaning of dates (into month_year format), then aggregating the edges by source and target to determine the weight of each edge. As there were many obscure connections between nodes with low frequencies, a cutoff set at edge weight &gt; 1000 was arbitrary set. This would give us the top 100+ connections.</a></li>
+  <li><a href="#we-check-the-columns-in-the-mc2_edges-df-to-determine-the-number-of-missing-values-in-each-column-to-assess-its-value-in-the-subsequent-analysis" id="toc-we-check-the-columns-in-the-mc2_edges-df-to-determine-the-number-of-missing-values-in-each-column-to-assess-its-value-in-the-subsequent-analysis" class="nav-link" data-scroll-target="#we-check-the-columns-in-the-mc2_edges-df-to-determine-the-number-of-missing-values-in-each-column-to-assess-its-value-in-the-subsequent-analysis">2.3.3 We check the columns in the MC2_edges df to determine the number of missing values in each column to assess its value in the subsequent analysis:</a></li>
+  <li><a href="#we-next-prepare-a-new-nodes-data-table-by-using-the-source-and-target-fields-of-mc2_edges_aggregated-data-table.-this-is-necessary-to-ensure-that-the-nodes-in-nodes-data-tables-include-all-the-source-and-target-values." id="toc-we-next-prepare-a-new-nodes-data-table-by-using-the-source-and-target-fields-of-mc2_edges_aggregated-data-table.-this-is-necessary-to-ensure-that-the-nodes-in-nodes-data-tables-include-all-the-source-and-target-values." class="nav-link" data-scroll-target="#we-next-prepare-a-new-nodes-data-table-by-using-the-source-and-target-fields-of-mc2_edges_aggregated-data-table.-this-is-necessary-to-ensure-that-the-nodes-in-nodes-data-tables-include-all-the-source-and-target-values.">2.3.4 We next prepare a new nodes data table by using the source and target fields of mc2_edges_aggregated data table. This is necessary to ensure that the nodes in nodes data tables include all the source and target values.</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#plotting-the-graphs" id="toc-plotting-the-graphs" class="nav-link" data-scroll-target="#plotting-the-graphs">3. Plotting the Graphs</a>
+  <ul class="collapse">
+  <li><a href="#exploring-the-individual-fish-species-in-the-bundles-dataset---tuna" id="toc-exploring-the-individual-fish-species-in-the-bundles-dataset---tuna" class="nav-link" data-scroll-target="#exploring-the-individual-fish-species-in-the-bundles-dataset---tuna">3.1 Exploring the individual fish species in the bundles dataset - Tuna</a></li>
+  <li><a href="#using-tbl_graphs-for-the-tuna-dataset." id="toc-using-tbl_graphs-for-the-tuna-dataset." class="nav-link" data-scroll-target="#using-tbl_graphs-for-the-tuna-dataset.">3.1.1 Using tbl_graphs for the Tuna dataset.</a></li>
+  <li><a href="#plotting-a-ggraph-network-graph-with-facet_edges-as-monthyear." id="toc-plotting-a-ggraph-network-graph-with-facet_edges-as-monthyear." class="nav-link" data-scroll-target="#plotting-a-ggraph-network-graph-with-facet_edges-as-monthyear.">3.1.2 Plotting a ggraph network graph with facet_edges as (~monthyear).</a></li>
+  <li><a href="#diving-into-the-main-mc2-dataset" id="toc-diving-into-the-main-mc2-dataset" class="nav-link" data-scroll-target="#diving-into-the-main-mc2-dataset">3.2 Diving into the main MC2 Dataset</a></li>
+  <li><a href="#using-tbl_graphs" id="toc-using-tbl_graphs" class="nav-link" data-scroll-target="#using-tbl_graphs">3.2.1 Using tbl_graphs:</a></li>
+  <li><a href="#plotting-a-basic-ggraph-graph-with-edge-width-representing-the-weight." id="toc-plotting-a-basic-ggraph-graph-with-edge-width-representing-the-weight." class="nav-link" data-scroll-target="#plotting-a-basic-ggraph-graph-with-edge-width-representing-the-weight.">3.2.2 Plotting a basic ggraph graph with edge width representing the weight.</a></li>
+  <li><a href="#plotting-a-graph-with-the-facet_edges-as-year-to-detect-trends-in-the-shipment-frequency-weight-of-edges-over-time." id="toc-plotting-a-graph-with-the-facet_edges-as-year-to-detect-trends-in-the-shipment-frequency-weight-of-edges-over-time." class="nav-link" data-scroll-target="#plotting-a-graph-with-the-facet_edges-as-year-to-detect-trends-in-the-shipment-frequency-weight-of-edges-over-time.">3.2.3 Plotting a graph with the facet_edges as (~year) to detect trends in the shipment frequency (weight of edges) over time.</a></li>
+  <li><a href="#plotting-an-interactive-network-graph-using-visnetwork" id="toc-plotting-an-interactive-network-graph-using-visnetwork" class="nav-link" data-scroll-target="#plotting-an-interactive-network-graph-using-visnetwork">3.2.4 Plotting an interactive network graph using visNetwork</a>
+  <ul class="collapse">
+  <li><a href="#data-is-first-prepared-with-the-following-code.-similarly-as-we-only-want-to-investigate-the-top-few-companies-in-the-network-as-it-intuitively-likely-would-be-the-more-global-companies-with-more-connections-the-weight-of-the-edges-are-filtered-1000-leaving-the-top-100-companies." id="toc-data-is-first-prepared-with-the-following-code.-similarly-as-we-only-want-to-investigate-the-top-few-companies-in-the-network-as-it-intuitively-likely-would-be-the-more-global-companies-with-more-connections-the-weight-of-the-edges-are-filtered-1000-leaving-the-top-100-companies." class="nav-link" data-scroll-target="#data-is-first-prepared-with-the-following-code.-similarly-as-we-only-want-to-investigate-the-top-few-companies-in-the-network-as-it-intuitively-likely-would-be-the-more-global-companies-with-more-connections-the-weight-of-the-edges-are-filtered-1000-leaving-the-top-100-companies.">3.4.1 Data is first prepared with the following code. Similarly, as we only want to investigate the top few companies in the network (as it intuitively likely would be the more global companies with more connections), the weight of the edges are filtered &gt;1000, leaving the top 100+ companies.</a></li>
+  <li><a href="#interactive-network-graph-using-visnetwork" id="toc-interactive-network-graph-using-visnetwork" class="nav-link" data-scroll-target="#interactive-network-graph-using-visnetwork">3.4.2 Interactive Network Graph using visNetwork</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">4. Conclusion</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -245,7 +303,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">May 13, 2023</p>
+      <p class="date-modified">May 25, 2023</p>
     </div>
   </div>
     
@@ -254,46 +312,509 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
+<section id="the-task" class="level1">
+<h1>1. The Task</h1>
+<section id="background" class="level2">
+<h2 class="anchored" data-anchor-id="background">1.1 Background</h2>
+<p>The country of Oceanus has sought FishEye International’s help in identifying companies possibly engaged in illegal, unreported, and unregulated (IUU) fishing. As part of the collaboration, FishEye’s analysts received import/export data for Oceanus’ marine and fishing industries. However, Oceanus has informed FishEye that the data is incomplete. To facilitate their analysis, FishEye transformed the trade data into a knowledge graph. Using this knowledge graph, they hope to understand business relationships, including finding links that will help them stop IUU fishing and protect marine species that are affected by it. FishEye analysts found that node-link diagrams gave them a good high-level overview of the knowledge graph. However, they are now looking for visualizations that provide more detail about patterns for entities in the knowledge graph</p>
+</section>
+<section id="the-task-in-detail" class="level2">
+<h2 class="anchored" data-anchor-id="the-task-in-detail">1.2 The Task in detail</h2>
+<p>Use visual analytics to identify temporal patterns for individual entities and between entities in the knowledge graph FishEye created from trade records. Categorize the types of business relationship patterns you find. Limit your response to 600 words and 6 images.</p>
+</section>
+</section>
+<section id="data-prep" class="level1">
+<h1>2. Data Prep</h1>
+<section id="loading-the-requisite-r-libraries" class="level2">
+<h2 class="anchored" data-anchor-id="loading-the-requisite-r-libraries">2.1 Loading the requisite R libraries:</h2>
 <div class="cell">
 <details>
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(jsonlite, tidyverse, tidygraph, ggraph, visNetwork)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(jsonlite, lubridate, tidyverse, tidygraph, ggraph, visNetwork)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="importing-the-requisite-json-files.-for-minicase-2-there-is-the-large-dataset-mc2-and-the-12-individual-datasets-from-the-bundle-date-of-the-different-individual-fish-species." class="level2">
+<h2 class="anchored" data-anchor-id="importing-the-requisite-json-files.-for-minicase-2-there-is-the-large-dataset-mc2-and-the-12-individual-datasets-from-the-bundle-date-of-the-different-individual-fish-species.">2.2 Importing the requisite JSON files. For minicase 2, there is the large dataset “MC2”, and the 12 individual datasets from the bundle date of the different individual fish species.</h2>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>MC2 <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(<span class="st">"data/mc2_challenge_graph.json"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
 <details>
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>MC1 <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(<span class="st">"data/MC1.json"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>tuna <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(<span class="st">"data/bundles/tuna.json"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>shark <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(<span class="st">"data/bundles/shark.json"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>salmon <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(<span class="st">"data/bundles/salmon.json"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>salmon_wgl <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(<span class="st">"data/bundles/salmon_wgl.json"</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>pollock <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(<span class="st">"data/bundles/pollock.json"</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>mackerel <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(<span class="st">"data/bundles/mackerel.json"</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>lichen <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(<span class="st">"data/bundles/lichen.json"</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>herring <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(<span class="st">"data/bundles/herring.json"</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>cod2 <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(<span class="st">"data/bundles/cod2.json"</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>chub_mackerel <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(<span class="st">"data/bundles/chub_mackerel.json"</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>catfish <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(<span class="st">"data/bundles/catfish.json"</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>carp <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(<span class="st">"data/bundles/carp.json"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+<p>Taking a look at the MC2 dataset:</p>
 <div class="cell">
 <details>
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>MC1_nodes <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(MC1<span class="sc">$</span>nodes) <span class="sc">%&gt;%</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, type, country)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(MC2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
+<div class="cell-output cell-output-stdout">
+<pre><code>List of 5
+ $ directed  : logi TRUE
+ $ multigraph: logi TRUE
+ $ graph     : Named list()
+ $ nodes     :'data.frame': 34576 obs. of  4 variables:
+  ..$ shpcountry: chr [1:34576] "Polarinda" NA "Oceanus" NA ...
+  ..$ rcvcountry: chr [1:34576] "Oceanus" NA "Oceanus" NA ...
+  ..$ dataset   : chr [1:34576] "MC2" "MC2" "MC2" "MC2" ...
+  ..$ id        : chr [1:34576] "AquaDelight Inc and Son's" "BaringoAmerica Marine Ges.m.b.H." "Yu gan  Sea spray GmbH Industrial" "FlounderLeska Marine BV" ...
+ $ links     :'data.frame': 5464378 obs. of  9 variables:
+  ..$ arrivaldate     : chr [1:5464378] "2034-02-12" "2034-03-13" "2028-02-07" "2028-02-23" ...
+  ..$ hscode          : chr [1:5464378] "630630" "630630" "470710" "470710" ...
+  ..$ valueofgoods_omu: num [1:5464378] 141015 141015 NA NA NA ...
+  ..$ volumeteu       : num [1:5464378] 0 0 0 0 0 0 0 0 0 0 ...
+  ..$ weightkg        : int [1:5464378] 4780 6125 10855 11250 11165 11290 9000 19490 6865 19065 ...
+  ..$ dataset         : chr [1:5464378] "MC2" "MC2" "MC2" "MC2" ...
+  ..$ source          : chr [1:5464378] "AquaDelight Inc and Son's" "AquaDelight Inc and Son's" "AquaDelight Inc and Son's" "AquaDelight Inc and Son's" ...
+  ..$ target          : chr [1:5464378] "BaringoAmerica Marine Ges.m.b.H." "BaringoAmerica Marine Ges.m.b.H." "-15045" "-15045" ...
+  ..$ valueofgoodsusd : num [1:5464378] NA NA NA NA NA ...</code></pre>
 </div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A quick glimpse of the data reveals that the bundles data is breakdown of the shipments of the different species of fishes, for the year 2034 only, while MC2 data is the aggregated shipment of fish for the years 2028 - 2034.</p>
+<p>As such, the approach in tackling the task would be to investigate the smaller bundles data first for clues, which would narrow down and scope the subsequent analysis when tackling the much larger MC2 data set.</p>
+</div>
+</div>
+</section>
+<section id="wrangling-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="wrangling-the-data">2.3 Wrangling the data:</h2>
+<section id="creating-the-tibble-of-nodes" class="level3">
+<h3 class="anchored" data-anchor-id="creating-the-tibble-of-nodes">2.3.1 Creating the tibble of nodes:</h3>
 <div class="cell">
 <details>
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>MC1_edges <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(MC1<span class="sc">$</span>links) <span class="sc">%&gt;%</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(source, target, type, weight, key)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>MC2_nodes <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(MC2<span class="sc">$</span>nodes) <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, shpcountry, rcvcountry)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+</section>
+<section id="creating-the-tibble-of-edges-with-cleaning-of-dates-into-month_year-format-then-aggregating-the-edges-by-source-and-target-to-determine-the-weight-of-each-edge.-as-there-were-many-obscure-connections-between-nodes-with-low-frequencies-a-cutoff-set-at-edge-weight-1000-was-arbitrary-set.-this-would-give-us-the-top-100-connections." class="level3">
+<h3 class="anchored" data-anchor-id="creating-the-tibble-of-edges-with-cleaning-of-dates-into-month_year-format-then-aggregating-the-edges-by-source-and-target-to-determine-the-weight-of-each-edge.-as-there-were-many-obscure-connections-between-nodes-with-low-frequencies-a-cutoff-set-at-edge-weight-1000-was-arbitrary-set.-this-would-give-us-the-top-100-connections.">2.3.2 Creating the tibble of edges, with cleaning of dates (into month_year format), then aggregating the edges by source and target to determine the weight of each edge. As there were many obscure connections between nodes with low frequencies, a cutoff set at edge weight &gt; 1000 was arbitrary set. This would give us the top 100+ connections.</h3>
 <div class="cell">
-
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>MC2_edges <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(MC2<span class="sc">$</span>links) <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">arrivaldate =</span> <span class="fu">ymd</span>(arrivaldate)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">monthyear =</span> <span class="fu">format</span>(arrivaldate, <span class="st">"%B %Y"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">year =</span> <span class="fu">year</span>(arrivaldate)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(source, target, hscode, weightkg, volumeteu, arrivaldate, monthyear, year, valueofgoods_omu, valueofgoodsusd) <span class="sc">%&gt;%</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>()</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>MC2_edges_aggregated <span class="ot">&lt;-</span> MC2_edges <span class="sc">%&gt;%</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(source, target, hscode, year) <span class="sc">%&gt;%</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">Weight =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(source<span class="sc">!=</span>target) <span class="sc">%&gt;%</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Weight <span class="sc">&gt;</span> <span class="dv">1000</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
+</section>
+<section id="we-check-the-columns-in-the-mc2_edges-df-to-determine-the-number-of-missing-values-in-each-column-to-assess-its-value-in-the-subsequent-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="we-check-the-columns-in-the-mc2_edges-df-to-determine-the-number-of-missing-values-in-each-column-to-assess-its-value-in-the-subsequent-analysis">2.3.3 We check the columns in the MC2_edges df to determine the number of missing values in each column to assess its value in the subsequent analysis:</h3>
 <div class="cell">
-
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Checking the number of missing values in each column </span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(MC2_edges<span class="sc">$</span>arrivaldate))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
 </div>
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(MC2_edges<span class="sc">$</span>hscode))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(MC2_edges<span class="sc">$</span>weightkg))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(MC2_edges<span class="sc">$</span>volumeteu))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 498081</code></pre>
+</div>
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(MC2_edges<span class="sc">$</span>valueofgoods_omu))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 5308806</code></pre>
+</div>
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(MC2_edges<span class="sc">$</span>valueofgoodsusd))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2886255</code></pre>
+</div>
+</div>
+<p>The number of missing values in the “valueofgoods_omu” and “valueofgoodsusd” columns appear to be more than 50%. Additionally, the “volumeteu” has 520933 (out of ~5 million) missing values, and since weightkg provides a good proxy, these columns will be omitted from subsequent analysis.</p>
+</section>
+<section id="we-next-prepare-a-new-nodes-data-table-by-using-the-source-and-target-fields-of-mc2_edges_aggregated-data-table.-this-is-necessary-to-ensure-that-the-nodes-in-nodes-data-tables-include-all-the-source-and-target-values." class="level3">
+<h3 class="anchored" data-anchor-id="we-next-prepare-a-new-nodes-data-table-by-using-the-source-and-target-fields-of-mc2_edges_aggregated-data-table.-this-is-necessary-to-ensure-that-the-nodes-in-nodes-data-tables-include-all-the-source-and-target-values.">2.3.4 We next prepare a new nodes data table by using the source and target fields of mc2_edges_aggregated data table. This is necessary to ensure that the nodes in nodes data tables include all the source and target values.</h3>
 <div class="cell">
-
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>id1 <span class="ot">&lt;-</span> MC2_edges_aggregated <span class="sc">%&gt;%</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(source) <span class="sc">%&gt;%</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">id =</span> source)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>id2 <span class="ot">&lt;-</span> MC2_edges_aggregated <span class="sc">%&gt;%</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(target) <span class="sc">%&gt;%</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">id =</span> target)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>MC2_nodes_extracted <span class="ot">&lt;-</span> <span class="fu">rbind</span>(id1, id2) <span class="sc">%&gt;%</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
+</section>
+</section>
+</section>
+<section id="plotting-the-graphs" class="level1">
+<h1>3. Plotting the Graphs</h1>
+<section id="exploring-the-individual-fish-species-in-the-bundles-dataset---tuna" class="level2">
+<h2 class="anchored" data-anchor-id="exploring-the-individual-fish-species-in-the-bundles-dataset---tuna">3.1 Exploring the individual fish species in the bundles dataset - Tuna</h2>
+<p>The tuna dataset was the most interesting for the year 2034. As such, the data wrangling for the tuna data set was done in a similar fashion as the MC2 dataset. However, as the dataset is smaller, additional fidelity of the shipments by monthyear was coded in.</p>
 <div class="cell">
-
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Tuna Data Wrangling</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>tuna_nodes <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(tuna<span class="sc">$</span>nodes) <span class="sc">%&gt;%</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, shpcountry, rcvcountry)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>tuna_edges <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(tuna<span class="sc">$</span>links) <span class="sc">%&gt;%</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">arrivaldate =</span> <span class="fu">ymd</span>(arrivaldate)) <span class="sc">%&gt;%</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">monthyear =</span> <span class="fu">format</span>(arrivaldate, <span class="st">"%B %Y"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">year =</span> <span class="fu">year</span>(arrivaldate)) <span class="sc">%&gt;%</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(source, target, hscode, arrivaldate, monthyear, valueofgoods_omu)</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>tuna_edges_aggregated <span class="ot">&lt;-</span> tuna_edges <span class="sc">%&gt;%</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(source, target, monthyear) <span class="sc">%&gt;%</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">Weight =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(source<span class="sc">!=</span>target) <span class="sc">%&gt;%</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Weight <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
+</section>
+<section id="using-tbl_graphs-for-the-tuna-dataset." class="level2">
+<h2 class="anchored" data-anchor-id="using-tbl_graphs-for-the-tuna-dataset.">3.1.1 Using tbl_graphs for the Tuna dataset.</h2>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Preparing of Tuna Graphs</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>tuna_graph <span class="ot">&lt;-</span> <span class="fu">tbl_graph</span>(<span class="at">nodes =</span> tuna_nodes,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">edges =</span> tuna_edges_aggregated, </span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">directed =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>tuna_graph <span class="sc">%&gt;%</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">activate</span>(edges) <span class="sc">%&gt;%</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Weight))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tbl_graph: 29 nodes and 28 edges
+#
+# A directed acyclic multigraph with 8 components
+#
+# A tibble: 28 × 4
+   from    to monthyear      Weight
+  &lt;int&gt; &lt;int&gt; &lt;chr&gt;           &lt;int&gt;
+1     1     2 August 2034        58
+2     1     2 September 2034     36
+3    12    13 October 2034       15
+4     3     4 September 2034     12
+5     5    19 November 2034      11
+6     1     2 October 2034       10
+# ℹ 22 more rows
+#
+# A tibble: 29 × 3
+  id                               shpcountry rcvcountry
+  &lt;chr&gt;                            &lt;chr&gt;      &lt;chr&gt;     
+1 Andhra Pradesh  Sp Worldwide     Utoporiana &lt;NA&gt;      
+2 Jharkhand Sea  S.p.A. United     &lt;NA&gt;       -27       
+3 Dutch Mussels Pic Marine biology Rio Isla   -27       
+# ℹ 26 more rows</code></pre>
+</div>
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>tuna_graph</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tbl_graph: 29 nodes and 28 edges
+#
+# A directed acyclic multigraph with 8 components
+#
+# A tibble: 29 × 3
+  id                                            shpcountry rcvcountry
+  &lt;chr&gt;                                         &lt;chr&gt;      &lt;chr&gt;     
+1 Andhra Pradesh  Sp Worldwide                  Utoporiana &lt;NA&gt;      
+2 Jharkhand Sea  S.p.A. United                  &lt;NA&gt;       -27       
+3 Dutch Mussels Pic Marine biology              Rio Isla   -27       
+4 Congo Rapids   Ltd. Corporation               &lt;NA&gt;       Azurionix 
+5 Brisa Marina Surfboard AB Marine conservation -27        &lt;NA&gt;      
+6 Mar de la Felicidad Inc Motorboat             &lt;NA&gt;       -27       
+# ℹ 23 more rows
+#
+# A tibble: 28 × 4
+   from    to monthyear      Weight
+  &lt;int&gt; &lt;int&gt; &lt;chr&gt;           &lt;int&gt;
+1     1     2 August 2034        58
+2     1     2 October 2034       10
+3     1     2 September 2034     36
+# ℹ 25 more rows</code></pre>
+</div>
+</div>
+<p>The greatest edge weight is from the company “Andhra Pradesh Sp Worldwide” to “Jharkhand Sea S.p.A. United” with weight of 108, which is higher than the next highest edge weight of 20.</p>
+</section>
+<section id="plotting-a-ggraph-network-graph-with-facet_edges-as-monthyear." class="level2">
+<h2 class="anchored" data-anchor-id="plotting-a-ggraph-network-graph-with-facet_edges-as-monthyear.">3.1.2 Plotting a ggraph network graph with facet_edges as (~monthyear).</h2>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting of Tuna Graph with Monthyear facet</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set_graph_style</span>()</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>i <span class="ot">&lt;-</span> <span class="fu">ggraph</span>(tuna_graph, </span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">layout =</span> <span class="st">"nicely"</span>) <span class="sc">+</span> </span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_edge_link</span>(<span class="fu">aes</span>(<span class="at">width=</span>Weight), </span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">alpha=</span><span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_edge_width</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="dv">5</span>)) <span class="sc">+</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_node_point</span>(<span class="fu">aes</span>(<span class="at">colour =</span> id), </span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>                  <span class="at">size =</span> <span class="dv">2</span>)</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>i <span class="sc">+</span> <span class="fu">facet_edges</span>(<span class="sc">~</span>monthyear)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Take-home_Ex02_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The monthyear facet shows that the majority of the 108 weight (representing shipments) are formed largely in the two months Aug 2034 (weight=58) and Sep 2034 (weight=36).</p>
+<p>It is indeed suspicious that such high amounts of shipments appear for 2 months in a year and thereafter goes to zero, especially since there are no seasons in Tuna fishing. It could be an example of a company that is involved in IUU fishing - overfishing in that two months then closing down to open as another company.</p>
+<p>This could definitely be explored in greater detail</p>
+</div>
+</div>
+</section>
+<section id="diving-into-the-main-mc2-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="diving-into-the-main-mc2-dataset">3.2 Diving into the main MC2 Dataset</h2>
+</section>
+<section id="using-tbl_graphs" class="level2">
+<h2 class="anchored" data-anchor-id="using-tbl_graphs">3.2.1 Using tbl_graphs:</h2>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Preparing of MC2 Graphs</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>MC2_graph <span class="ot">&lt;-</span> <span class="fu">tbl_graph</span>(<span class="at">nodes =</span> MC2_nodes_extracted,</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>                       <span class="at">edges =</span> MC2_edges_aggregated,</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>                       <span class="at">directed =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>MC2_graph <span class="sc">%&gt;%</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">activate</span>(edges) <span class="sc">%&gt;%</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Weight))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tbl_graph: 58 nodes and 118 edges
+#
+# A directed acyclic multigraph with 13 components
+#
+# A tibble: 118 × 5
+   from    to hscode  year Weight
+  &lt;int&gt; &lt;int&gt; &lt;chr&gt;  &lt;dbl&gt;  &lt;int&gt;
+1     7    40 841810  2034   6844
+2     7    40 841810  2033   6185
+3    30    40 950300  2030   6114
+4     9    44 870324  2028   3547
+5    31    56 304620  2031   3471
+6     9    43 870323  2028   3237
+# ℹ 112 more rows
+#
+# A tibble: 58 × 1
+  id                             
+  &lt;chr&gt;                          
+1 Aqua Mermaid Corporation Export
+2 Bahía del Este Oyj Transit     
+3 Beachcombers NV and Son's      
+# ℹ 55 more rows</code></pre>
+</div>
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>MC2_graph</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tbl_graph: 58 nodes and 118 edges
+#
+# A directed acyclic multigraph with 13 components
+#
+# A tibble: 58 × 1
+  id                                   
+  &lt;chr&gt;                                
+1 Aqua Mermaid Corporation Export      
+2 Bahía del Este Oyj Transit           
+3 Beachcombers NV and Son's            
+4 Blue Nile  N.V. Marine               
+5 Caracola del Este Corporation Express
+6 Coastal Cruisers Pic Shipping        
+# ℹ 52 more rows
+#
+# A tibble: 118 × 5
+   from    to hscode  year Weight
+  &lt;int&gt; &lt;int&gt; &lt;chr&gt;  &lt;dbl&gt;  &lt;int&gt;
+1     1    33 761010  2031   1294
+2     2    34 611595  2029   1123
+3     3    35 381600  2033   1078
+# ℹ 115 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="plotting-a-basic-ggraph-graph-with-edge-width-representing-the-weight." class="level2">
+<h2 class="anchored" data-anchor-id="plotting-a-basic-ggraph-graph-with-edge-width-representing-the-weight.">3.2.2 Plotting a basic ggraph graph with edge width representing the weight.</h2>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggraph</span>(MC2_graph, </span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">layout =</span> <span class="st">"nicely"</span>) <span class="sc">+</span> </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_edge_link</span>(<span class="fu">aes</span>(<span class="at">width=</span>Weight), </span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">alpha=</span><span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_edge_width</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="dv">5</span>)) <span class="sc">+</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_node_point</span>(<span class="fu">aes</span>(<span class="at">colour =</span> id), </span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">size =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Take-home_Ex02_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="plotting-a-graph-with-the-facet_edges-as-year-to-detect-trends-in-the-shipment-frequency-weight-of-edges-over-time." class="level2">
+<h2 class="anchored" data-anchor-id="plotting-a-graph-with-the-facet_edges-as-year-to-detect-trends-in-the-shipment-frequency-weight-of-edges-over-time.">3.2.3 Plotting a graph with the facet_edges as (~year) to detect trends in the shipment frequency (weight of edges) over time.</h2>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggraph</span>(MC2_graph, </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">layout =</span> <span class="st">"nicely"</span>) <span class="sc">+</span> </span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_edge_link</span>(<span class="fu">aes</span>(<span class="at">width=</span>Weight), </span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">alpha=</span><span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_edge_width</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="dv">5</span>)) <span class="sc">+</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_node_point</span>(<span class="fu">aes</span>(<span class="at">colour =</span> id), </span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">size =</span> <span class="dv">2</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>g <span class="sc">+</span> <span class="fu">facet_edges</span>(<span class="sc">~</span>year)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Take-home_Ex02_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="plotting-an-interactive-network-graph-using-visnetwork" class="level2">
+<h2 class="anchored" data-anchor-id="plotting-an-interactive-network-graph-using-visnetwork">3.2.4 Plotting an interactive network graph using visNetwork</h2>
+<section id="data-is-first-prepared-with-the-following-code.-similarly-as-we-only-want-to-investigate-the-top-few-companies-in-the-network-as-it-intuitively-likely-would-be-the-more-global-companies-with-more-connections-the-weight-of-the-edges-are-filtered-1000-leaving-the-top-100-companies." class="level3">
+<h3 class="anchored" data-anchor-id="data-is-first-prepared-with-the-following-code.-similarly-as-we-only-want-to-investigate-the-top-few-companies-in-the-network-as-it-intuitively-likely-would-be-the-more-global-companies-with-more-connections-the-weight-of-the-edges-are-filtered-1000-leaving-the-top-100-companies.">3.4.1 Data is first prepared with the following code. Similarly, as we only want to investigate the top few companies in the network (as it intuitively likely would be the more global companies with more connections), the weight of the edges are filtered &gt;1000, leaving the top 100+ companies.</h3>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Data preparation for plotting an interactive network graph</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>MC2_edges_aggregated2 <span class="ot">&lt;-</span> MC2_edges <span class="sc">%&gt;%</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(MC2_nodes, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"source"</span> <span class="ot">=</span> <span class="st">"id"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">from =</span> source) <span class="sc">%&gt;%</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(MC2_nodes, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"target"</span> <span class="ot">=</span> <span class="st">"id"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">to =</span> target) <span class="sc">%&gt;%</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(from, to) <span class="sc">%&gt;%</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">weight =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(from<span class="sc">!=</span>to) <span class="sc">%&gt;%</span></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(weight <span class="sc">&gt;</span> <span class="dv">1000</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="interactive-network-graph-using-visnetwork" class="level3">
+<h3 class="anchored" data-anchor-id="interactive-network-graph-using-visnetwork">3.4.2 Interactive Network Graph using visNetwork</h3>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting an interactive network graph</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">visNetwork</span>(MC2_nodes_extracted,</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>           MC2_edges_aggregated2) <span class="sc">%&gt;%</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">visIgraphLayout</span>(<span class="at">layout =</span> <span class="st">"layout_with_fr"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">visOptions</span>(<span class="at">highlightNearest =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">nodesIdSelection =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">visLegend</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">visLayout</span>(<span class="at">randomSeed =</span> <span class="dv">123</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="visNetwork html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-7f24b5dbb000c41e1e5a" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-7f24b5dbb000c41e1e5a">{"x":{"nodes":{"id":["Aqua Mermaid Corporation Export","Bahía del Este Oyj Transit","Beachcombers NV and Son's","Blue Nile  N.V. Marine","Caracola del Este Corporation Express","Coastal Cruisers Pic Shipping","French Crab S.p.A. Worldwide","Himachal Pradesh   S.A. de C.V. America","Ianira Starfish Sagl Import","Icelandic Cod Pier ОАО Transport","Isla del Mar Marine Oyj Transit","Lake Kainji  S.p.A. Export","Madhya Pradesh  Market LLC","Maharashtra   Limited Liability Company","Mar del Este Sp","Mar y Luna Sagl","Marine Masterminds Dry dock","Nile   S.A. de C.V.","Náutica del Norte Kga Holdings","Ola Azul Ges.m.b.H. Services","Paradera S.A. de C.V.","Playa del Tesoro BV","Playa del Tesoro OJSC","Saltwater Sanctuary ОАО Merchants","Saltwater Sisters Inc Seafaring","Sea Breezes S.A. de C.V. Freight ","Tamil Nadu  Market Co","The Salty Pearl Kga","Uttar Pradesh s CJSC","bǐ mù yú Sagl Distribution","nián yú Ltd. Corporation","suō yú Incorporated Brothers","-1225","Marine Mavericks Corporation Express","Isla del Este SE","hǎi dǎn Corporation Wharf","Marine Mates Cruise ship","ReefRider Foods Ltd. Corporation Family","Dry Creek Company Services","Saltwater Supreme ОАО Forwading","Isla del Tesoro GmbH & Co. KG Chart","Haryana s Sagl Transport","Kong zhong diao yu  Express Charter Boat ","Panope Limited Liability Company","Himachal Pradesh   Plc International","Sailors and Surfers Incorporated Enterprises","Caracola del Sol Services","Coral Cove BV Delivery","Mar del Este CJSC","Pao gan SE Seal","-2821","Costa de la Felicidad Shipping","Fresh Wharf SRL Consulting","-2105","Togo  S.A. de C.V.","Niger Bend   Limited Liability Company Marine ecology","Sea Breezes GmbH & Co. KG Shark","Arena del Mar Marine Marine biology"],"x":[-0.785089621076032,0.148306751429159,0.871935248978499,-0.294767054363002,-0.268273458292752,0.192587412550673,-0.444043641589881,-0.484895060344348,-0.646190516195703,-0.452529849581733,-0.187736689410339,-0.0628105338290889,-0.0330614245044242,-0.0601008484565257,-0.478870141079111,0.0276126256510383,0.100175002775373,0.411466361769495,-0.113381577951128,1,0.719805154352846,-0.269303476302888,0.640705793893483,0.245670706877527,-0.769837553870455,0.586869024382369,0.498670307648325,-0.840559666488429,0.0985059527243495,-0.221539510546535,0.522324805298225,0.044157741011422,-0.926661504079554,0.250976104248995,0.967967073801439,-0.226373768623554,0.0510229217609757,0.227526046509378,-0.641422487084804,-0.150630873021099,-0.629682561405442,-0.968031423165236,-0.908975531949845,-0.323052849948926,-0.116084897526134,-0.0654266755309659,0.198017966928654,-0.503557946927413,0.777859288655201,0.41240993089919,-0.489267120218185,0.11064068789997,0.519415787445578,-1,-0.575000808057544,0.750015239953814,0.0251776734758351,0.688645799011139],"y":[0.710820438632451,1,0.521857407039447,0.157157427121671,0.00903532637104321,-0.304357622258621,-0.636225633488732,0.884942056718132,-0.388370010871397,-0.174550355794234,0.980205197955633,-1,0.0762313494291507,-0.266311061042452,0.0212058347106168,-0.457342890021817,-0.90010589199031,0.226937950634479,-0.415131362724171,0.0102697635007407,-0.604717594484987,-0.68382999107072,0.740411489862814,0.296538099232056,0.0710563204228327,-0.219506353678928,-0.0196237827367211,-0.168546831999735,-0.386208672252356,-0.523476029700489,-0.663399785243256,-0.30492988607595,0.608969124586966,0.89500353721737,0.400465250159882,-0.266102389911137,-0.138746798469242,-0.207556582070494,-0.919207777277637,-0.726451731193918,0.804405811156534,-0.37085942046267,-0.544540581325172,-0.407472137967611,0.853597935430498,-0.604812567943409,-0.0590646008096529,-0.248878378098691,-0.0348434804825309,-0.460371578250835,-0.902341497989212,-0.588448106359431,0.822526334910747,0.19271885116957,0.226056058443908,-0.442969796905603,-0.648308849359397,-0.874452193703606],"label":["Aqua Mermaid Corporation Export","Bahía del Este Oyj Transit","Beachcombers NV and Son's","Blue Nile  N.V. Marine","Caracola del Este Corporation Express","Coastal Cruisers Pic Shipping","French Crab S.p.A. Worldwide","Himachal Pradesh   S.A. de C.V. America","Ianira Starfish Sagl Import","Icelandic Cod Pier ОАО Transport","Isla del Mar Marine Oyj Transit","Lake Kainji  S.p.A. Export","Madhya Pradesh  Market LLC","Maharashtra   Limited Liability Company","Mar del Este Sp","Mar y Luna Sagl","Marine Masterminds Dry dock","Nile   S.A. de C.V.","Náutica del Norte Kga Holdings","Ola Azul Ges.m.b.H. Services","Paradera S.A. de C.V.","Playa del Tesoro BV","Playa del Tesoro OJSC","Saltwater Sanctuary ОАО Merchants","Saltwater Sisters Inc Seafaring","Sea Breezes S.A. de C.V. Freight ","Tamil Nadu  Market Co","The Salty Pearl Kga","Uttar Pradesh s CJSC","bǐ mù yú Sagl Distribution","nián yú Ltd. Corporation","suō yú Incorporated Brothers","-1225","Marine Mavericks Corporation Express","Isla del Este SE","hǎi dǎn Corporation Wharf","Marine Mates Cruise ship","ReefRider Foods Ltd. Corporation Family","Dry Creek Company Services","Saltwater Supreme ОАО Forwading","Isla del Tesoro GmbH & Co. KG Chart","Haryana s Sagl Transport","Kong zhong diao yu  Express Charter Boat ","Panope Limited Liability Company","Himachal Pradesh   Plc International","Sailors and Surfers Incorporated Enterprises","Caracola del Sol Services","Coral Cove BV Delivery","Mar del Este CJSC","Pao gan SE Seal","-2821","Costa de la Felicidad Shipping","Fresh Wharf SRL Consulting","-2105","Togo  S.A. de C.V.","Niger Bend   Limited Liability Company Marine ecology","Sea Breezes GmbH & Co. KG Shark","Arena del Mar Marine Marine biology"]},"edges":{"from":["Aqua Mermaid Corporation Export","Aqua Mermaid Corporation Export","Bahía del Este Oyj Transit","Beachcombers NV and Son's","Blue Nile  N.V. Marine","Caracola del Este Corporation Express","Caracola del Este Corporation Express","Caracola del Este Corporation Express","Caracola del Este Corporation Express","Coastal Cruisers Pic Shipping","Coastal Cruisers Pic Shipping","Coastal Cruisers Pic Shipping","Coastal Cruisers Pic Shipping","Coastal Cruisers Pic Shipping","Coastal Cruisers Pic Shipping","French Crab S.p.A. Worldwide","French Crab S.p.A. Worldwide","French Crab S.p.A. Worldwide","French Crab S.p.A. Worldwide","Himachal Pradesh   S.A. de C.V. America","Ianira Starfish Sagl Import","Ianira Starfish Sagl Import","Ianira Starfish Sagl Import","Ianira Starfish Sagl Import","Ianira Starfish Sagl Import","Icelandic Cod Pier ОАО Transport","Icelandic Cod Pier ОАО Transport","Icelandic Cod Pier ОАО Transport","Isla del Mar Marine Oyj Transit","Lake Kainji  S.p.A. Export","Madhya Pradesh  Market LLC","Madhya Pradesh  Market LLC","Maharashtra   Limited Liability Company","Maharashtra   Limited Liability Company","Maharashtra   Limited Liability Company","Mar del Este Sp","Mar y Luna Sagl","Mar y Luna Sagl","Mar y Luna Sagl","Mar y Luna Sagl","Mar y Luna Sagl","Mar y Luna Sagl","Mar y Luna Sagl","Mar y Luna Sagl","Marine Masterminds Dry dock","Marine Masterminds Dry dock","Nile   S.A. de C.V.","Náutica del Norte Kga Holdings","Náutica del Norte Kga Holdings","Náutica del Norte Kga Holdings","Náutica del Norte Kga Holdings","Náutica del Norte Kga Holdings","Náutica del Norte Kga Holdings","Náutica del Norte Kga Holdings","Náutica del Norte Kga Holdings","Náutica del Norte Kga Holdings","Ola Azul Ges.m.b.H. Services","Panope Limited Liability Company","Paradera S.A. de C.V.","Playa del Tesoro BV","Playa del Tesoro BV","Playa del Tesoro BV","Playa del Tesoro BV","Playa del Tesoro OJSC","Saltwater Sanctuary ОАО Merchants","Saltwater Sisters Inc Seafaring","Saltwater Sisters Inc Seafaring","Saltwater Sisters Inc Seafaring","Sea Breezes S.A. de C.V. Freight ","Sea Breezes S.A. de C.V. Freight ","Sea Breezes S.A. de C.V. Freight ","Sea Breezes S.A. de C.V. Freight ","Tamil Nadu  Market Co","Tamil Nadu  Market Co","Tamil Nadu  Market Co","The Salty Pearl Kga","Uttar Pradesh s CJSC","Uttar Pradesh s CJSC","Uttar Pradesh s CJSC","Uttar Pradesh s CJSC","Uttar Pradesh s CJSC","Uttar Pradesh s CJSC","Uttar Pradesh s CJSC","bǐ mù yú Sagl Distribution","bǐ mù yú Sagl Distribution","bǐ mù yú Sagl Distribution","bǐ mù yú Sagl Distribution","bǐ mù yú Sagl Distribution","bǐ mù yú Sagl Distribution","bǐ mù yú Sagl Distribution","nián yú Ltd. Corporation","nián yú Ltd. Corporation","nián yú Ltd. Corporation","nián yú Ltd. Corporation","suō yú Incorporated Brothers","suō yú Incorporated Brothers","suō yú Incorporated Brothers","suō yú Incorporated Brothers","suō yú Incorporated Brothers"],"to":["-1225","Isla del Tesoro GmbH & Co. KG Chart","Marine Mavericks Corporation Express","Isla del Este SE","hǎi dǎn Corporation Wharf","Caracola del Sol Services","Coral Cove BV Delivery","Togo  S.A. de C.V.","hǎi dǎn Corporation Wharf","Caracola del Sol Services","Costa de la Felicidad Shipping","Marine Mates Cruise ship","Pao gan SE Seal","ReefRider Foods Ltd. Corporation Family","hǎi dǎn Corporation Wharf","Dry Creek Company Services","Panope Limited Liability Company","Saltwater Supreme ОАО Forwading","hǎi dǎn Corporation Wharf","Isla del Tesoro GmbH & Co. KG Chart","Coral Cove BV Delivery","Haryana s Sagl Transport","Kong zhong diao yu  Express Charter Boat ","Panope Limited Liability Company","hǎi dǎn Corporation Wharf","Coral Cove BV Delivery","Panope Limited Liability Company","hǎi dǎn Corporation Wharf","Himachal Pradesh   Plc International","Sailors and Surfers Incorporated Enterprises","Caracola del Sol Services","hǎi dǎn Corporation Wharf","ReefRider Foods Ltd. Corporation Family","Sailors and Surfers Incorporated Enterprises","hǎi dǎn Corporation Wharf","hǎi dǎn Corporation Wharf","Caracola del Sol Services","Costa de la Felicidad Shipping","Panope Limited Liability Company","Pao gan SE Seal","Sailors and Surfers Incorporated Enterprises","Saltwater Supreme ОАО Forwading","Sea Breezes GmbH & Co. KG Shark","hǎi dǎn Corporation Wharf","Costa de la Felicidad Shipping","Saltwater Supreme ОАО Forwading","Caracola del Sol Services","Coral Cove BV Delivery","Costa de la Felicidad Shipping","Marine Mates Cruise ship","Panope Limited Liability Company","ReefRider Foods Ltd. Corporation Family","Sailors and Surfers Incorporated Enterprises","Saltwater Supreme ОАО Forwading","Sea Breezes GmbH & Co. KG Shark","hǎi dǎn Corporation Wharf","Mar del Este CJSC","Coral Cove BV Delivery","Pao gan SE Seal","-2821","Costa de la Felicidad Shipping","Saltwater Supreme ОАО Forwading","hǎi dǎn Corporation Wharf","Fresh Wharf SRL Consulting","Caracola del Sol Services","-2105","Coral Cove BV Delivery","Togo  S.A. de C.V.","Caracola del Sol Services","Mar del Este CJSC","Niger Bend   Limited Liability Company Marine ecology","Pao gan SE Seal","Caracola del Sol Services","Mar del Este CJSC","ReefRider Foods Ltd. Corporation Family","Coral Cove BV Delivery","Caracola del Sol Services","Costa de la Felicidad Shipping","Panope Limited Liability Company","Pao gan SE Seal","ReefRider Foods Ltd. Corporation Family","Sea Breezes GmbH & Co. KG Shark","hǎi dǎn Corporation Wharf","Coral Cove BV Delivery","Costa de la Felicidad Shipping","Panope Limited Liability Company","Sailors and Surfers Incorporated Enterprises","Saltwater Supreme ОАО Forwading","Sea Breezes GmbH & Co. KG Shark","hǎi dǎn Corporation Wharf","Arena del Mar Marine Marine biology","Costa de la Felicidad Shipping","Niger Bend   Limited Liability Company Marine ecology","Pao gan SE Seal","Caracola del Sol Services","Costa de la Felicidad Shipping","Marine Mates Cruise ship","Sailors and Surfers Incorporated Enterprises","hǎi dǎn Corporation Wharf"],"weight":[3766,1965,2551,2092,10183,3425,1309,2546,14867,23734,3336,10051,1969,2908,6673,3792,2072,26626,1808,9051,7047,8101,14228,8757,4977,2650,1251,9335,2747,12323,1320,2288,1363,1604,8676,3118,1441,5610,18017,1480,1132,16522,1732,6375,2628,26728,14479,6406,2673,2753,5411,2386,1664,5315,1299,4962,7813,4952,1761,7828,7807,1133,1745,6804,1696,3640,3228,9115,9265,1074,2571,4633,1440,1046,13934,3850,6218,8863,14794,2716,4225,20567,11333,1364,5617,4271,1728,12717,2661,8653,3569,5641,10887,2642,2765,6650,4330,1118,6619]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":false},"physics":{"stabilization":false},"layout":{"randomSeed":123}},"groups":null,"width":null,"height":null,"idselection":{"enabled":true,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","igraphlayout":{"type":"square"},"highlight":{"enabled":true,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":false,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":true,"position":"left","ncol":1,"stepX":100,"stepY":100,"zoom":true}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>From the above network graph, we can examine the more active companies, which are plotted around the centre of the network graph. Clicking the various nodes show the connections between that particular company and the other companies it is linked to. Immediately, 3 companies pop up as being the most widely connected:</li>
+</ol>
+<ol type="a">
+<li>hǎi dǎn Corporation Wharf</li>
+<li>Panope Limited Liability Company</li>
+<li>Caracola del Sol Services</li>
+</ol>
+<p>These could be representative of companies which function as the middle men or hub, through which shipments get routed through.</p>
+<p>Do note that this chart does not reveal the companies which have the greatest frequency of shipments.</p>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>4. Conclusion</h1>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

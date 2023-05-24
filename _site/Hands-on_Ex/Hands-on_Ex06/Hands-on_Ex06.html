@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Shaun Tan">
+<meta name="dcterms.date" content="2023-05-19">
+
+<title>ISSS608-VAA - Hands-on Exercise 6</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">ISSS608-VAA</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-hands-on-exercises" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Hands-on Exercises</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-hands-on-exercises">    
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html">
+ <span class="dropdown-text">Hands-on Exercise 1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html">
+ <span class="dropdown-text">Hands-on Exercise 2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex03/Hands-on_Ex03.html">
+ <span class="dropdown-text">Hands-on Exercise 3</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-in-class-exercises" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">In-class Exercises</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-in-class-exercises">    
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex01/In-class_Ex01.html">
+ <span class="dropdown-text">In-class Exercise 1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex03/In-class_Ex03.html">
+ <span class="dropdown-text">In-class Exercise 3</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex04/In-class_Ex04.html">
+ <span class="dropdown-text">In-class Exercise 4</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex05/In-class_Ex05.html">
+ <span class="dropdown-text">In-class Exercise 5</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-take-home-exercise" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Take-home Exercise</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-take-home-exercise">    
+        <li>
+    <a class="dropdown-item" href="../../Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html">
+ <span class="dropdown-text">Take-home Exercise 1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Take-home_Ex/Take-home_Ex01/Take-home_Ex02.html">
+ <span class="dropdown-text">Take-home Exercise 2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Take-home_Ex/Take-home_Ex01/Take-home_Ex03.html">
+ <span class="dropdown-text">Take-home Exercise 3</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../About.html">
+ <span class="menu-text">About</span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#installing-the-requisite-r-packages" id="toc-installing-the-requisite-r-packages" class="nav-link active" data-scroll-target="#installing-the-requisite-r-packages">1. Installing the requisite R packages</a></li>
+  <li><a href="#data-prep" id="toc-data-prep" class="nav-link" data-scroll-target="#data-prep">2. Data Prep</a>
+  <ul class="collapse">
+  <li><a href="#importing-the-data" id="toc-importing-the-data" class="nav-link" data-scroll-target="#importing-the-data">2.1 Importing the Data</a></li>
+  <li><a href="#preparing-the-data" id="toc-preparing-the-data" class="nav-link" data-scroll-target="#preparing-the-data">2.2 Preparing the Data</a></li>
+  </ul></li>
+  <li><a href="#plotting-charts" id="toc-plotting-charts" class="nav-link" data-scroll-target="#plotting-charts">3. Plotting Charts</a>
+  <ul class="collapse">
+  <li><a href="#plotting-basic-ternary-diagrams" id="toc-plotting-basic-ternary-diagrams" class="nav-link" data-scroll-target="#plotting-basic-ternary-diagrams">3.1.2 Plotting Basic Ternary Diagrams</a></li>
+  <li><a href="#adding-colors-and-aes-to-the-basic-ternary-diagram" id="toc-adding-colors-and-aes-to-the-basic-ternary-diagram" class="nav-link" data-scroll-target="#adding-colors-and-aes-to-the-basic-ternary-diagram">3.1.2 Adding Colors and Aes to the Basic Ternary Diagram</a></li>
+  <li><a href="#building-an-interative-ternary-diagram-using-plotly" id="toc-building-an-interative-ternary-diagram-using-plotly" class="nav-link" data-scroll-target="#building-an-interative-ternary-diagram-using-plotly">3.1.3 Building an interative Ternary Diagram using plotly()</a></li>
+  </ul></li>
+  <li><a href="#reusable-function-for-creating-annotation-object" id="toc-reusable-function-for-creating-annotation-object" class="nav-link" data-scroll-target="#reusable-function-for-creating-annotation-object">reusable function for creating annotation object</a></li>
+  <li><a href="#reusable-function-for-axis-formatting" id="toc-reusable-function-for-axis-formatting" class="nav-link" data-scroll-target="#reusable-function-for-axis-formatting">reusable function for axis formatting</a></li>
+  <li><a href="#initiating-a-plotly-visualization" id="toc-initiating-a-plotly-visualization" class="nav-link" data-scroll-target="#initiating-a-plotly-visualization">Initiating a plotly visualization</a></li>
+  <li><a href="#visual-correlation-analysis" id="toc-visual-correlation-analysis" class="nav-link" data-scroll-target="#visual-correlation-analysis">4. Visual Correlation Analysis</a></li>
+  <li><a href="#installing-and-preparing-the-data-set" id="toc-installing-and-preparing-the-data-set" class="nav-link" data-scroll-target="#installing-and-preparing-the-data-set">4.1 Installing and Preparing the Data Set</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Hands-on Exercise 6</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Shaun Tan </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">May 19, 2023</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">May 25, 2023</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+</header>
+
+<section id="installing-the-requisite-r-packages" class="level1">
+<h1>1. Installing the requisite R packages</h1>
+<p>pacman::p_load(plotly, tidyverse, corrplot, ggstatsplot, tidyverse, ggcorrplot)</p>
+<p>require(devtools) install_version(“ggtern”, version = “3.4.1”, repos = “http://cran.us.r-project.org”)</p>
+<p>library(ggtern)</p>
+</section>
+<section id="data-prep" class="level1">
+<h1>2. Data Prep</h1>
+<section id="importing-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="importing-the-data">2.1 Importing the Data</h2>
+<p>#Reading the data into R environment pop_data &lt;- read_csv(“data/respopagsex2000to2018_tidy.csv”)</p>
+</section>
+<section id="preparing-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="preparing-the-data">2.2 Preparing the Data</h2>
+<p>#Deriving the young, economy active and old measures agpop_mutated &lt;- pop_data %&gt;% mutate(<code>Year</code> = as.character(Year))%&gt;% spread(AG, Population) %&gt;% mutate(YOUNG = rowSums(.[4:8]))%&gt;% mutate(ACTIVE = rowSums(.[9:16])) %&gt;% mutate(OLD = rowSums(.[17:21])) %&gt;% mutate(TOTAL = rowSums(.[22:24])) %&gt;% filter(Year == 2018)%&gt;% filter(TOTAL &gt; 0)</p>
+</section>
+</section>
+<section id="plotting-charts" class="level1">
+<h1>3. Plotting Charts</h1>
+<section id="plotting-basic-ternary-diagrams" class="level2">
+<h2 class="anchored" data-anchor-id="plotting-basic-ternary-diagrams">3.1.2 Plotting Basic Ternary Diagrams</h2>
+<p>#Building the static ternary plot ggtern(data=agpop_mutated,aes(x=YOUNG,y=ACTIVE, z=OLD)) + geom_point()</p>
+</section>
+<section id="adding-colors-and-aes-to-the-basic-ternary-diagram" class="level2">
+<h2 class="anchored" data-anchor-id="adding-colors-and-aes-to-the-basic-ternary-diagram">3.1.2 Adding Colors and Aes to the Basic Ternary Diagram</h2>
+<p>#Building the static ternary plot ggtern(data=agpop_mutated, aes(x=YOUNG,y=ACTIVE, z=OLD)) + geom_point() + labs(title=“Population structure, 2015”) + theme_rgbw()</p>
+</section>
+<section id="building-an-interative-ternary-diagram-using-plotly" class="level2">
+<h2 class="anchored" data-anchor-id="building-an-interative-ternary-diagram-using-plotly">3.1.3 Building an interative Ternary Diagram using plotly()</h2>
+</section>
+</section>
+<section id="reusable-function-for-creating-annotation-object" class="level1">
+<h1>reusable function for creating annotation object</h1>
+<p>label &lt;- function(txt) { list( text = txt, x = 0.1, y = 1, ax = 0, ay = 0, xref = “paper”, yref = “paper”, align = “center”, font = list(family = “serif”, size = 15, color = “white”), bgcolor = “#b3b3b3”, bordercolor = “black”, borderwidth = 2 ) }</p>
+</section>
+<section id="reusable-function-for-axis-formatting" class="level1">
+<h1>reusable function for axis formatting</h1>
+<p>axis &lt;- function(txt) { list( title = txt, tickformat = “.0%”, tickfont = list(size = 10) ) }</p>
+<p>ternaryAxes &lt;- list( aaxis = axis(“Young”), baxis = axis(“Active”), caxis = axis(“Old”) )</p>
+</section>
+<section id="initiating-a-plotly-visualization" class="level1">
+<h1>Initiating a plotly visualization</h1>
+<p>plot_ly( agpop_mutated, a = ~YOUNG, b = ~ACTIVE, c = ~OLD, color = I(“black”), type = “scatterternary” ) %&gt;% layout( annotations = label(“Ternary Markers”), ternary = ternaryAxes ) ```</p>
+</section>
+<section id="visual-correlation-analysis" class="level1">
+<h1>4. Visual Correlation Analysis</h1>
+</section>
+<section id="installing-and-preparing-the-data-set" class="level1">
+<h1>4.1 Installing and Preparing the Data Set</h1>
+<p>Importing the data</p>
+<p>wine &lt;- read_csv(“data/wine_quality.csv”)</p>
+<p>Building a correlation Matrix</p>
+<p>pairs(wine[,1:11])</p>
+<p>pairs(wine[,2:12])</p>
+<p>Drawing the lower corner</p>
+<p>pairs(wine[,2:12], upper.panel = NULL)</p>
+<p>Drawing the upper corner</p>
+<p>pairs(wine[,2:12], lower.panel = NULL)</p>
+<p>Including the correlation Coefficient</p>
+<p>panel.cor &lt;- function(x, y, digits=2, prefix=““, cex.cor, …) { usr &lt;- par(”usr”) on.exit(par(usr)) par(usr = c(0, 1, 0, 1)) r &lt;- abs(cor(x, y, use=“complete.obs”)) txt &lt;- format(c(r, 0.123456789), digits=digits)[1] txt &lt;- paste(prefix, txt, sep=““) if(missing(cex.cor)) cex.cor &lt;- 0.8/strwidth(txt) text(0.5, 0.5, txt, cex = cex.cor * (1 + r) / 2) }</p>
+<p>pairs(wine[,2:12], upper.panel = panel.cor)</p>
+<p>Using ggcorrmat() to visualise a correlation matrix</p>
+<p>ggstatsplot::ggcorrmat( data = wine, cor.vars = 1:11)</p>
+<p>ggstatsplot::ggcorrmat( data = wine, cor.vars = 1:11, ggcorrplot.args = list(outline.color = “black”, hc.order = TRUE, tl.cex = 10), title = “Correlogram for wine dataset”, subtitle = “Four pairs are no significant at p &lt; 0.05” )</p>
+<p>Grouped ggcorrmat()</p>
+<p>grouped_ggcorrmat( data = wine, cor.vars = 1:11, grouping.var = type, type = “robust”, p.adjust.method = “holm”, plotgrid.args = list(ncol = 2), ggcorrplot.args = list(outline.color = “black”, hc.order = TRUE, tl.cex = 10), annotation.args = list( tag_levels = “a”, title = “Correlogram for wine dataset”, subtitle = “The measures are: alcohol, sulphates, fixed acidity, citric acid, chlorides, residual sugar, density, free sulfur dioxide and volatile acidity”, caption = “Dataset: UCI Machine Learning Repository” ) )</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -5,6 +5,10 @@ date: "5/13/2023"
 date-modified: "`r Sys.Date()`"
 format:
   html:
+    grid: 
+      body-width: 8000px
+      sidebar-width: 200px
+      margin-width: 200px
     code-fold: true
     code-summary: "Show the code"
 execute:
@@ -29,7 +33,9 @@ Use visual analytics to identify temporal patterns for individual entities and b
 pacman::p_load(jsonlite, lubridate, tidyverse, tidygraph, ggraph, visNetwork)
 ```
 
-## 2.2 Importing the requisite JSON files. For minicase 2, there is the large dataset "MC2", and the 12 individual datasets from the bundle date of the different individual fish species. 
+## 2.2 Importing the requisite JSON files. 
+
+For minicase 2, there is the large dataset "MC2", and the 12 individual datasets from the bundle date of the different individual fish species. 
 
 ```{r}
 MC2 <- jsonlite::fromJSON("data/mc2_challenge_graph.json")
@@ -68,7 +74,9 @@ MC2_nodes <- as_tibble(MC2$nodes) %>%
   select(id, shpcountry, rcvcountry)
 ```
 
-### 2.3.2 Creating the tibble of edges, with cleaning of dates (into month_year format), then aggregating the edges by source and target to determine the weight of each edge. As there were many obscure connections between nodes with low frequencies, a cutoff set at edge weight > 1000 was arbitrary set. This would give us the top 100+ connections.
+### 2.3.2 Creating the tibble of edges
+
+This is done by mutating the dates (into month_year format), then aggregating the edges by source and target to determine the weight of each edge. As there were many obscure connections between nodes with low frequencies, a cutoff set at edge weight > 1000 was arbitrary set. This would give us the top 100+ connections.
 
 ```{r}
 MC2_edges <- as_tibble(MC2$links) %>%
@@ -85,7 +93,7 @@ MC2_edges_aggregated <- MC2_edges %>%
   filter(Weight > 1000) %>%
   ungroup()
 ```
-### 2.3.3 We check the columns in the MC2_edges df to determine the number of missing values in each column to assess its value in the subsequent analysis:
+### 2.3.3 Checking for Missing Values
 ```{r}
 # Checking the number of missing values in each column 
 sum(is.na(MC2_edges$arrivaldate))
@@ -97,7 +105,9 @@ sum(is.na(MC2_edges$valueofgoodsusd))
 ```
 The number of missing values in the "valueofgoods_omu" and "valueofgoodsusd" columns appear to be more than 50%. Additionally, the "volumeteu" has 520933 (out of ~5 million) missing values, and since weightkg provides a good proxy, these columns will be omitted from subsequent analysis.
 
-### 2.3.4 We next prepare  a new nodes data table by using the source and target fields of mc2_edges_aggregated data table. This is necessary to ensure that the nodes in nodes data tables include all the source and target values.
+### 2.3.4 Nodes Table
+
+We next prepare  a new nodes data table by using the source and target fields of mc2_edges_aggregated data table. This is necessary to ensure that the nodes in nodes data tables include all the source and target values.
 ```{r}
 id1 <- MC2_edges_aggregated %>%
   select(source) %>%
@@ -148,7 +158,7 @@ tuna_graph
 The greatest edge weight is from the company "Andhra Pradesh  Sp Worldwide" to "Jharkhand Sea  S.p.A. United" with weight of 108, which is higher than the next highest edge weight of 20.
 
 ## 3.1.2 Plotting a ggraph network graph with facet_edges as (~monthyear).
-```{r}
+```{r, fig.width=11, fig.height=6}
 # Plotting of Tuna Graph with Monthyear facet
 set_graph_style()
 
@@ -158,9 +168,34 @@ i <- ggraph(tuna_graph,
                  alpha=0.2) +
   scale_edge_width(range = c(0.1, 5)) +
   geom_node_point(aes(colour = id), 
-                  size = 2)
+                  size = 2) +
+  theme(legend.position = 'right',
+        plot.background = element_rect(fill = 'white', color = 'black'),
+        plot.margin = margin(2, 2, 2, 2, "cm"),
+        plot.title = element_text(size = 16, face = 'bold'))
 
-i + facet_edges(~monthyear)
+i + facet_edges(~monthyear, nrow = 3) +
+  theme(plot.margin = margin(2, 2, 2, 2, "cm"),
+        plot.background = element_rect(fill = 'white', color = 'black'),
+        plot.title = element_text(size = 18, face = 'bold'),
+        plot.subtitle = element_text(size = 14))
+```
+
+```{r, fig.width=11, fig.height=6}
+# Plotting of Tuna Graph with Monthyear facet
+set_graph_style()
+
+i <- ggraph(tuna_graph, 
+            layout = "nicely") + 
+  geom_edge_link(aes(width=Weight), 
+                 alpha=0.2) +
+  scale_edge_width(range = c(0.1, 5)) +
+  geom_node_point(aes(colour = id), 
+                  size = 2) +
+  theme(legend.position = 'right')
+
+i + facet_edges(~monthyear, nrow = 3)
+
 ```
 
 :::{.callout-note}
@@ -189,7 +224,7 @@ MC2_graph
 
 ## 3.2.2 Plotting a basic ggraph graph with edge width representing the weight. 
 
-```{r}
+```{r, fig.width=13, fig.height=6}
 ggraph(MC2_graph, 
             layout = "nicely") + 
   geom_edge_link(aes(width=Weight), 
@@ -199,22 +234,26 @@ ggraph(MC2_graph,
                   size = 2)
 ```
 
-## 3.2.3 Plotting a graph with the facet_edges as (~year) to detect trends in the shipment frequency (weight of edges) over time. 
-```{r}
+## 3.2.3 Plotting a graph with the facet_edges as (~year) 
+
+This is done to detect trends in the shipment frequency (weight of edges) over time. 
+```{r, fig.width=16, fig.height=8}
 g <- ggraph(MC2_graph, 
             layout = "nicely") + 
   geom_edge_link(aes(width=Weight), 
                  alpha=0.2) +
   scale_edge_width(range = c(0.1, 5)) +
   geom_node_point(aes(colour = id), 
-                  size = 2, show.legend = FALSE)
+                  size = 2)
 
 g + facet_edges(~year)
 ```
 
 ## 3.2.4 Plotting an interactive network graph using visNetwork
 
-### 3.4.1 Data is first prepared with the following code. Similarly, as we only want to investigate the top few companies in the network (as it intuitively likely would be the more global companies with more connections), the weight of the edges are filtered >1000, leaving the top 100+ companies.
+### 3.4.1 Preparing the Data
+
+Data is first prepared with the following code. Similarly, as we only want to investigate the top few companies in the network (as it intuitively likely would be the more global companies with more connections), the weight of the edges are filtered >1000, leaving the top 100+ companies.
 
 ```{r}
 # Data preparation for plotting an interactive network graph

@@ -224,27 +224,40 @@ MC2_graph
 
 ## 3.2.2 Plotting a basic ggraph graph with edge width representing the weight. 
 
-```{r, fig.width=13, fig.height=6}
+```{r, fig.width=13, fig.height=15}
 ggraph(MC2_graph, 
             layout = "nicely") + 
   geom_edge_link(aes(width=Weight), 
                  alpha=0.2) +
-  scale_edge_width(range = c(0.1, 5)) +
+  scale_edge_width(range = c(0.1, 8)) +
   geom_node_point(aes(colour = id), 
-                  size = 2)
+                  size = 5) +
+  theme(legend.key.size = unit(0.7, 'cm'), #change legend key size
+        legend.key.height = unit(0.7, 'cm'), #change legend key height
+        legend.key.width = unit(0.7, 'cm'), #change legend key width
+        legend.title = element_text(size=14), #change legend title font size
+        legend.text = element_text(size=12),
+        legend.position = "bottom",legend.direction = "vertical")
 ```
 
 ## 3.2.3 Plotting a graph with the facet_edges as (~year) 
 
 This is done to detect trends in the shipment frequency (weight of edges) over time. 
-```{r, fig.width=16, fig.height=8}
+```{r, fig.width=16, fig.height=15}
 g <- ggraph(MC2_graph, 
             layout = "nicely") + 
   geom_edge_link(aes(width=Weight), 
-                 alpha=0.2) +
+                 alpha=0.2, show.legend = "top") +
   scale_edge_width(range = c(0.1, 5)) +
   geom_node_point(aes(colour = id), 
-                  size = 2)
+                  size = 2) +
+  theme(legend.key.size = unit(0.7, 'cm'), #change legend key size
+        legend.key.height = unit(0.7, 'cm'), #change legend key height
+        legend.key.width = unit(0.7, 'cm'), #change legend key width
+        legend.title = element_text(size=14), #change legend title font size
+        legend.text = element_text(size=12),
+        legend.position = "bottom") #change legend text font size
+    
 
 g + facet_edges(~year)
 ```

@@ -1,0 +1,345 @@
+---
+title: "Take-home Exercise 2 - MC2"
+author: "Shaun Tan"
+date: "5/26/2023"
+date-modified: "`r Sys.Date()`"
+format:
+  html:
+    grid: 
+      body-width: 8000px
+      sidebar-width: 200px
+      margin-width: 200px
+    code-fold: true
+    code-summary: "Show the code"
+execute:
+  warning: False
+  echo: True
+  eval: True
+---
+
+# 1. The Task
+
+## 1.1 Background
+
+The country of Oceanus has sought FishEye International’s help in identifying companies possibly engaged in illegal, unreported, and unregulated (IUU) fishing. As part of the collaboration, FishEye’s analysts received import/export data for Oceanus’ marine and fishing industries. However, Oceanus has informed FishEye that the data is incomplete. To facilitate their analysis, FishEye transformed the trade data into a knowledge graph. Using this knowledge graph, they hope to understand business relationships, including finding links that will help them stop IUU fishing and protect marine species that are affected by it. FishEye analysts found that node-link diagrams gave them a good high-level overview of the knowledge graph. However, they are now looking for visualizations that provide more detail about patterns for entities in the knowledge graph
+
+## 1.2 The Task in detail
+
+Use visual analytics to identify temporal patterns for individual entities and between entities in the knowledge graph FishEye created from trade records. Categorize the types of business relationship patterns you find. Limit your response to 600 words and 6 images.
+
+# 2. Data Prep
+
+## 2.1 Loading the requisite R libraries:
+
+```{R}
+pacman::p_load(jsonlite, lubridate, tidyverse, tidygraph, ggraph, visNetwork)
+```
+
+
+## 2.2 Importing the requisite JSON files. 
+
+For minicase 2, there is the large dataset "MC2", and the 12 individual datasets from the bundle date of the different individual fish species. 
+
+
+```{r}
+MC2 <- jsonlite::fromJSON("data/mc2_challenge_graph.json")
+```
+
+```{r}
+tuna <- jsonlite::fromJSON("data/bundles/tuna.json")
+shark <- jsonlite::fromJSON("data/bundles/shark.json")
+salmon <- jsonlite::fromJSON("data/bundles/salmon.json")
+salmon_wgl <- jsonlite::fromJSON("data/bundles/salmon_wgl.json")
+pollock <- jsonlite::fromJSON("data/bundles/pollock.json")
+mackerel <- jsonlite::fromJSON("data/bundles/mackerel.json")
+lichen <- jsonlite::fromJSON("data/bundles/lichen.json")
+herring <- jsonlite::fromJSON("data/bundles/herring.json")
+cod2 <- jsonlite::fromJSON("data/bundles/cod2.json")
+chub_mackerel <- jsonlite::fromJSON("data/bundles/chub_mackerel.json")
+catfish <- jsonlite::fromJSON("data/bundles/catfish.json")
+carp <- jsonlite::fromJSON("data/bundles/carp.json")
+```
+
+
+Taking a look at the MC2 dataset:
+
+```{r}
+glimpse(MC2)
+```
+
+:::{.callout-note}
+A quick glimpse of the data reveals that the bundles data is breakdown of the shipments of the different species of fishes, for the year 2034 only, while MC2 data is the aggregated shipment of fish for the years 2028 - 2034.
+
+As such, the approach in tackling the task would be to investigate the smaller bundles data first for clues, which would narrow down and scope the subsequent analysis when tackling the much larger MC2 data set.
+:::
+
+## 2.3 Wrangling the data:
+
+### 2.3.1 Creating the tibble of nodes:
+
+```{r}
+MC2_nodes <- as_tibble(MC2$nodes) %>%
+  select(id, shpcountry, rcvcountry)
+```
+
+
+### 2.3.2 Creating the tibble of edges
+
+This is done by mutating the dates (into month_year format), then aggregating the edges by source and target to determine the weight of each edge. As there were many obscure connections between nodes with low frequencies, a cutoff set at edge weight > 1000 was arbitrary set. This would give us the top 100+ connections.
+
+
+```{r}
+MC2_edges <- as_tibble(MC2$links) %>%
+  mutate(arrivaldate = ymd(arrivaldate)) %>%
+  mutate(monthyear = format(arrivaldate, "%B %Y")) %>%
+  mutate(year = year(arrivaldate)) %>%
+  select(source, target, hscode, weightkg, volumeteu, arrivaldate, monthyear, year, valueofgoods_omu, valueofgoodsusd) %>%
+  distinct()
+
+MC2_edges_aggregated <- MC2_edges %>%
+  group_by(source, target, hscode, year) %>%
+    summarise(Weight = n()) %>%
+  filter(source!=target) %>%
+  filter(Weight > 1000) %>%
+  ungroup()
+```
+
+### 2.3.3 Checking for Missing Values
+
+```{r}
+# Checking the number of missing values in each column 
+sum(is.na(MC2_edges$arrivaldate))
+sum(is.na(MC2_edges$hscode))
+sum(is.na(MC2_edges$weightkg))
+sum(is.na(MC2_edges$volumeteu))
+sum(is.na(MC2_edges$valueofgoods_omu))
+sum(is.na(MC2_edges$valueofgoodsusd))
+```
+
+The number of missing values in the "valueofgoods_omu" and "valueofgoodsusd" columns appear to be more than 50%. Additionally, the "volumeteu" has 520933 (out of ~5 million) missing values, and since weightkg provides a good proxy, these columns will be omitted from subsequent analysis.
+
+### 2.3.4 Nodes Table
+
+We next prepare  a new nodes data table by using the source and target fields of mc2_edges_aggregated data table. This is necessary to ensure that the nodes in nodes data tables include all the source and target values.
+
+```{r}
+id1 <- MC2_edges_aggregated %>%
+  select(source) %>%
+  rename(id = source)
+id2 <- MC2_edges_aggregated %>%
+  select(target) %>%
+  rename(id = target)
+MC2_nodes_extracted <- rbind(id1, id2) %>%
+  distinct()
+```
+
+
+# 3. Plotting the Graphs
+
+## 3.1 Exploring the individual fish species in the bundles dataset - Tuna
+
+The tuna dataset was the most interesting for the year 2034. As such, the data wrangling for the tuna data set was done in a similar fashion as the MC2 dataset. However, as the dataset is smaller, additional fidelity of the shipments by monthyear was coded in. 
+
+```{r}
+# Tuna Data Wrangling
+tuna_nodes <- as_tibble(tuna$nodes) %>%
+  select(id, shpcountry, rcvcountry)
+
+tuna_edges <- as_tibble(tuna$links) %>%
+  mutate(arrivaldate = ymd(arrivaldate)) %>%
+  mutate(monthyear = format(arrivaldate, "%B %Y")) %>%
+  mutate(year = year(arrivaldate)) %>%
+  select(source, target, hscode, arrivaldate, monthyear, valueofgoods_omu)
+
+tuna_edges_aggregated <- tuna_edges %>%
+  group_by(source, target, monthyear) %>%
+    summarise(Weight = n()) %>%
+  filter(source!=target) %>%
+  filter(Weight > 1) %>%
+  ungroup()
+```
+
+## 3.1.1 Using tbl_graphs for the Tuna dataset.
+
+```{r}
+#Preparing of Tuna Graphs
+tuna_graph <- tbl_graph(nodes = tuna_nodes,
+                        edges = tuna_edges_aggregated, 
+                        directed = TRUE)
+
+tuna_graph %>%
+  activate(edges) %>%
+  arrange(desc(Weight))
+
+tuna_graph
+```
+
+The greatest edge weight is from the company "Andhra Pradesh  Sp Worldwide" to "Jharkhand Sea  S.p.A. United" with weight of 108, which is higher than the next highest edge weight of 20.
+
+## 3.1.2 Plotting a ggraph network graph with facet_edges as (~monthyear).
+
+```{r, fig.width=11, fig.height=6}
+# Plotting of Tuna Graph with Monthyear facet
+set_graph_style()
+
+i <- ggraph(tuna_graph, 
+            layout = "nicely") + 
+  geom_edge_link(aes(width=Weight), 
+                 alpha=0.2) +
+  scale_edge_width(range = c(0.1, 5)) +
+  geom_node_point(aes(colour = id), 
+                  size = 2) +
+  theme(legend.position = 'right',
+        plot.background = element_rect(fill = 'white', color = 'black'),
+        plot.margin = margin(2, 2, 2, 2, "cm"),
+        plot.title = element_text(size = 16, face = 'bold'))
+
+i + facet_edges(~monthyear, nrow = 3) +
+  theme(plot.margin = margin(2, 2, 2, 2, "cm"),
+        plot.background = element_rect(fill = 'white', color = 'black'),
+        plot.title = element_text(size = 18, face = 'bold'),
+        plot.subtitle = element_text(size = 14))
+```
+
+```{r, fig.width=11, fig.height=6}
+# Plotting of Tuna Graph with Monthyear facet
+set_graph_style()
+
+i <- ggraph(tuna_graph, 
+            layout = "nicely") + 
+  geom_edge_link(aes(width=Weight), 
+                 alpha=0.2) +
+  scale_edge_width(range = c(0.1, 5)) +
+  geom_node_point(aes(colour = id), 
+                  size = 2) +
+  theme(legend.position = 'right')
+
+i + facet_edges(~monthyear, nrow = 3)
+
+```
+
+
+:::{.callout-note}
+The monthyear facet shows that the majority of the 108 weight (representing shipments) are formed largely in the two months Aug 2034 (weight=58) and Sep 2034 (weight=36). 
+
+It is indeed suspicious that such high amounts of shipments appear for 2 months in a year and thereafter goes to zero, especially since there are no seasons in Tuna fishing. It could be an example of a company that is involved in IUU fishing - overfishing in that two months then closing down to open as another company.
+
+This could definitely be explored in greater detail
+:::
+
+## 3.2 Diving into the main MC2 Dataset
+
+## 3.2.1 Using tbl_graphs:
+
+```{r}
+# Preparing of MC2 Graphs
+MC2_graph <- tbl_graph(nodes = MC2_nodes_extracted,
+                       edges = MC2_edges_aggregated,
+                       directed = TRUE)
+
+MC2_graph %>%
+  activate(edges) %>%
+  arrange(desc(Weight))
+
+MC2_graph
+```
+
+
+## 3.2.2 Plotting a basic ggraph graph with edge width representing the weight. 
+
+
+```{r, fig.width=13, fig.height=15}
+ggraph(MC2_graph, 
+            layout = "nicely") + 
+  geom_edge_link(aes(width=Weight), 
+                 alpha=0.2) +
+  scale_edge_width(range = c(0.1, 8)) +
+  geom_node_point(aes(colour = id), 
+                  size = 5) +
+  theme(legend.key.size = unit(0.7, 'cm'), #change legend key size
+        legend.key.height = unit(0.7, 'cm'), #change legend key height
+        legend.key.width = unit(0.7, 'cm'), #change legend key width
+        legend.title = element_text(size=14), #change legend title font size
+        legend.text = element_text(size=12),
+        legend.position = "bottom",legend.direction = "vertical")
+```
+
+
+## 3.2.3 Plotting a graph with the facet_edges as (~year) 
+
+This is done to detect trends in the shipment frequency (weight of edges) over time. 
+
+```{r, fig.width=16, fig.height=15}
+g <- ggraph(MC2_graph, 
+            layout = "nicely") + 
+  geom_edge_link(aes(width=Weight), 
+                 alpha=0.2, show.legend = "top") +
+  scale_edge_width(range = c(0.1, 5)) +
+  geom_node_point(aes(colour = id), 
+                  size = 2) +
+  theme(legend.key.size = unit(0.7, 'cm'), #change legend key size
+        legend.key.height = unit(0.7, 'cm'), #change legend key height
+        legend.key.width = unit(0.7, 'cm'), #change legend key width
+        legend.title = element_text(size=14), #change legend title font size
+        legend.text = element_text(size=12),
+        legend.position = "bottom") #change legend text font size
+    
+
+g + facet_edges(~year)
+```
+
+
+## 3.2.4 Plotting an interactive network graph using visNetwork
+
+### 3.4.1 Preparing the Data
+
+Data is first prepared with the following code. Similarly, as we only want to investigate the top few companies in the network (as it intuitively likely would be the more global companies with more connections), the weight of the edges are filtered >1000, leaving the top 100+ companies.
+
+
+```{r}
+# Data preparation for plotting an interactive network graph
+MC2_edges_aggregated2 <- MC2_edges %>%
+  left_join(MC2_nodes, by = c("source" = "id")) %>%
+  rename(from = source) %>%
+  left_join(MC2_nodes, by = c("target" = "id")) %>%
+  rename(to = target) %>%
+  group_by(from, to) %>%
+    summarise(weight = n()) %>%
+  filter(from!=to) %>%
+  filter(weight > 1000) %>%
+  ungroup()
+```
+
+
+### 3.4.2 Interactive Network Graph using visNetwork
+
+
+```{r}
+# Plotting an interactive network graph
+visNetwork(MC2_nodes_extracted,
+           MC2_edges_aggregated2) %>%
+  visIgraphLayout(layout = "layout_with_fr") %>%
+  visOptions(highlightNearest = TRUE,
+             nodesIdSelection = TRUE) %>%
+  visLegend() %>%
+  visLayout(randomSeed = 123)
+```
+
+
+:::{.callout-note}
+
+1. From the above network graph, we can examine the more active companies, which are plotted around the centre of the network graph. Clicking the various nodes show the connections between that particular company and the other companies it is linked to. Immediately, 3 companies pop up as being the most widely connected:
+
+ a. hǎi dǎn Corporation Wharf
+ b. Panope Limited Liability Company
+ c. Caracola del Sol Services
+
+These could be representative of companies which function as the middle men or hub, through which shipments get routed through. 
+
+Do note that this chart does not reveal the companies which have the greatest frequency of shipments. 
+:::
+
+# 4. Conclusion
+
+
+

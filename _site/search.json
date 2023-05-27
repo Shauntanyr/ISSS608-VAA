@@ -207,7 +207,7 @@
     "href": "Take-home_Ex/Take-home_Ex02/Take-home_Ex02.html#plotting-a-basic-ggraph-graph-with-edge-width-representing-the-weight.",
     "title": "Take-home Exercise 2 - MC2",
     "section": "3.2.2 Plotting a basic ggraph graph with edge width representing the weight.",
-    "text": "3.2.2 Plotting a basic ggraph graph with edge width representing the weight.\n\n\nShow the code\nggraph(MC2_graph, \n            layout = \"nicely\") + \n  geom_edge_link(aes(width=Weight), \n                 alpha=0.2) +\n  scale_edge_width(range = c(0.1, 5)) +\n  geom_node_point(aes(colour = id), \n                  size = 2)"
+    "text": "3.2.2 Plotting a basic ggraph graph with edge width representing the weight.\n\n\nShow the code\nggraph(MC2_graph, \n            layout = \"nicely\") + \n  geom_edge_link(aes(width=Weight), \n                 alpha=0.2) +\n  scale_edge_width(range = c(0.1, 8)) +\n  geom_node_point(aes(colour = id), \n                  size = 5) +\n  theme(legend.key.size = unit(0.7, 'cm'), #change legend key size\n        legend.key.height = unit(0.7, 'cm'), #change legend key height\n        legend.key.width = unit(0.7, 'cm'), #change legend key width\n        legend.title = element_text(size=14), #change legend title font size\n        legend.text = element_text(size=12),\n        legend.position = \"bottom\",legend.direction = \"vertical\")"
   },
   {
     "objectID": "Take-home_Ex/Take-home_Ex02/Take-home_Ex02.html#plotting-a-graph-with-the-facet_edges-as-year-to-detect-trends-in-the-shipment-frequency-weight-of-edges-over-time.",
@@ -277,6 +277,6 @@
     "href": "Take-home_Ex/Take-home_Ex02/Take-home_Ex02.html#plotting-a-graph-with-the-facet_edges-as-year",
     "title": "Take-home Exercise 2 - MC2",
     "section": "3.2.3 Plotting a graph with the facet_edges as (~year)",
-    "text": "3.2.3 Plotting a graph with the facet_edges as (~year)\nThis is done to detect trends in the shipment frequency (weight of edges) over time.\n\n\nShow the code\ng <- ggraph(MC2_graph, \n            layout = \"nicely\") + \n  geom_edge_link(aes(width=Weight), \n                 alpha=0.2) +\n  scale_edge_width(range = c(0.1, 5)) +\n  geom_node_point(aes(colour = id), \n                  size = 2)\n\ng + facet_edges(~year)"
+    "text": "3.2.3 Plotting a graph with the facet_edges as (~year)\nThis is done to detect trends in the shipment frequency (weight of edges) over time.\n\n\nShow the code\ng <- ggraph(MC2_graph, \n            layout = \"nicely\") + \n  geom_edge_link(aes(width=Weight), \n                 alpha=0.2, show.legend = \"top\") +\n  scale_edge_width(range = c(0.1, 5)) +\n  geom_node_point(aes(colour = id), \n                  size = 2) +\n  theme(legend.key.size = unit(0.7, 'cm'), #change legend key size\n        legend.key.height = unit(0.7, 'cm'), #change legend key height\n        legend.key.width = unit(0.7, 'cm'), #change legend key width\n        legend.title = element_text(size=14), #change legend title font size\n        legend.text = element_text(size=12),\n        legend.position = \"bottom\") #change legend text font size\n    \n\ng + facet_edges(~year)"
   }
 ]

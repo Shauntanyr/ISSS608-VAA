@@ -1,0 +1,68 @@
+---
+title: "Take-home Exercise 3 - MC3"
+author: "Shaun Tan"
+date: "6/3/2023"
+date-modified: "`r Sys.Date()`"
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
+execute:
+  warning: False
+  echo: True
+  eval: True
+---
+
+
+```{r}
+pacman::p_load(jsonlite, tidygraph, ggraph, visNetwork, gralayouts, ggforce, tidytext, tidyverse)
+```
+
+## Importing json file by using jsonlite package
+
+```{r}
+mc3_data <-
+  jsonlite::fromJSON("data/MC3.json")
+```
+
+```{r}
+mc3_edges <- as_tibble(mc3_data$links)
+```
+
+```{r}
+mc3_edges <-
+  as_tibble(mc3_data$links) %>%
+    distinct() %>%
+  mutate(source = as.character(source),
+         target = as.character(target),
+         type = as.character(type)) %>%
+  group_by(source, target, type) %>%
+  summarise(weights = n()) %>%
+  filter(source!=target) %>%
+  ungroup()
+``` 
+
+```{r}
+mc3_nodes <- as_tibble(mc3_data$nodes)
+```
+
+```{r}
+mc3_nodes <- as_tibble(mc3_data$nodes) %>%
+# distinct() %>%
+  mutate(country = as.character(country),
+         id = as.character(id),
+         product_services = as.character(product_services),
+         revenue_omu = as.numeric(as.character(revenue_omu)),
+         type = as.character(type)) %>%
+  select(id, country, type, revenue_omu, product_services)
+```
+
+## Initial 
+
+need to recode the character(0) into NA to ensure future text sensing will be coherent
+
+business group can be found by type (ie. company, beneficial owner, company contacts). beneficial owner will be connected to comapny. Company contacts will be connect to company. company connected to company 
+
+look also at the description part. Some can be straightforward: automobile. Other can be computer product notebooks etc,
+
+if you dont do text analytics, can just type in the filter and explore key words like "fish"

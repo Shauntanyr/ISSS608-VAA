@@ -172,15 +172,15 @@ The greatest edge weight is from the company "Andhra Pradesh Sp Worldwide" to "J
 
 ## 3.1.2 Plotting a ggraph network graph with facet_edges as (\~monthyear).
 
-```{r, fig.width=11, fig.height=10}
+```{r, fig.width=11, fig.height=14}
 # Plotting of Tuna Graph with Monthyear facet
 set_graph_style()
 
 i <- ggraph(tuna_graph, 
             layout = "nicely") + 
   geom_edge_link(aes(width=Weight), 
-                 alpha=0.2) +
-  scale_edge_width(range = c(0.1, 5)) +
+                 alpha=0.4) +
+  scale_edge_width(range = c(0.1, 8)) +
   geom_node_point(aes(colour = id), 
                   size = 3)
 
@@ -192,33 +192,11 @@ i + facet_edges(~monthyear, nrow = 3) + th_foreground(foreground = "grey80",
         legend.key.width = unit(0.7, 'cm'), #change legend key width
         legend.title = element_text(size=14), #change legend title font size
         legend.text = element_text(size=12),
-        legend.position = "bottom",legend.direction = "vertical")
+        legend.position = "bottom",legend.direction = "vertical") +
+  labs(
+    title = "Tuna shipments across the months in year 2034",
+    subtitle = "Displays the relationship between tuna trading companies, and the months in which they are more active")
   
-```
-
-```{r, fig.width=11, fig.height=10}
-# Plotting of Tuna Graph with Monthyear facet
-set_graph_style()
-
-i <- ggraph(tuna_graph, 
-            layout = "nicely") + 
-  geom_edge_link(aes(width=Weight), 
-                 alpha=0.2) +
-  scale_edge_width(range = c(0.1, 10)) +
-  geom_node_point(aes(colour = id), 
-                  size = 3) +
-  theme(legend.position = 'right')
-
-i + facet_edges(~monthyear, nrow = 3) + th_foreground(foreground = "grey80",  
-                border = TRUE) +   
-  theme(strip.text.x = element_text(size = 16),
-        legend.key.size = unit(0.7, 'cm'), #change legend key size
-        legend.key.height = unit(0.7, 'cm'), #change legend key height
-        legend.key.width = unit(0.7, 'cm'), #change legend key width
-        legend.title = element_text(size=14), #change legend title font size
-        legend.text = element_text(size=12),
-        legend.position = "bottom",legend.direction = "vertical")
-
 ```
 
 ::: callout-note
@@ -252,30 +230,36 @@ MC2_graph
 ggraph(MC2_graph, 
             layout = "nicely") + 
   geom_edge_link(aes(width=Weight), 
-                 alpha=0.2) +
-  scale_edge_width(range = c(0.1, 6)) +
+                 alpha=0.5) +
+  scale_edge_width(range = c(0.1, 10)) +
   geom_node_point(aes(colour = id), 
-                  size = 3) +
+                  size = 5, show.legend = FALSE) +
+  geom_node_text(aes(label = id),size = 3, repel = TRUE
+  ) +
   theme(legend.key.size = unit(0.7, 'cm'), #change legend key size
         legend.key.height = unit(0.7, 'cm'), #change legend key height
         legend.key.width = unit(0.7, 'cm'), #change legend key width
         legend.title = element_text(size=14), #change legend title font size
         legend.text = element_text(size=12),
-        legend.position = "bottom",legend.direction = "vertical")
+        legend.position = "right",legend.direction = "vertical") +
+  labs(title = "Network Graph of total aggregated shipment",
+    subtitle = "Edge weights depict the frequency of shipments in the time period - active shipment routes and active trading partners")
+
 ```
 
 ## 3.2.3 Plotting a graph with the facet_edges as (~year)
 
 This is done to detect trends in the shipment frequency (weight of edges) over time.
 
-```{r, fig.width=10, fig.height=11}
+```{r, fig.width=10, fig.height=13}
 g <- ggraph(MC2_graph, 
             layout = "nicely") + 
   geom_edge_link(aes(width=Weight), 
-                 alpha=0.2, show.legend = "top") +
-  scale_edge_width(range = c(0.1, 5)) +
+                 alpha=0.4, show.legend = "top") +
+  scale_edge_width(range = c(0.1, 8)) +
   geom_node_point(aes(colour = id), 
-                  size = 3) 
+                  size = 3)
+
 g + facet_edges(~year)+
   th_foreground(foreground = "grey80",  
                 border = TRUE) +
@@ -286,7 +270,11 @@ g + facet_edges(~year)+
         legend.key.width = unit(0.6, 'cm'), #change legend key width
         legend.title = element_text(size=12), #change legend title font size
         legend.text = element_text(size=10),
-        legend.position = "bottom",legend.direction = "vertical")
+        legend.position = "bottom",legend.direction = "vertical") +
+  labs(
+    title = "Top aggregated shipments across the years",
+    subtitle = "Companies with more pronounced widths depicts established partnerships between companies with business links"
+  )
 ```
 
 ## 3.2.4 Plotting an interactive network graph using visNetwork
@@ -332,6 +320,38 @@ c.  Caracola del Sol Services
 These could be representative of companies which function as the middle men or hub, through which shipments get routed through.
 
 Do note that this chart does not reveal the companies which have the greatest frequency of shipments.
+:::
+
+### 3.4.3 Interactive Network Graph using visNetwork with direction of trade flows
+
+```{r}
+edges_df <- MC2_graph %>%
+  activate(edges) %>%
+  as.tibble()
+```
+```{r}
+nodes_df <- MC2_graph %>%
+  activate(nodes) %>%
+  as.tibble() %>%
+  rename(label = id) %>%
+  mutate(id=row_number()) %>%
+  select(id, label)
+```
+
+```{r}
+visNetwork(nodes_df,
+           edges_df) %>%
+  visIgraphLayout(layout = "layout_with_fr") %>%
+  visEdges(arrows = "to", 
+           smooth = list(enabled = TRUE, 
+                         type = "curvedCW"))
+```
+::: callout-note
+Building upon the visNetwork chart in 3.4.2, we further refine the data and chart to further depict and visually accentuate the flows of trades between the nodes. From this chart, we will be able to better form an understanding of the relationships between the companies. 
+
+1.  The chart confirms the relationship of two of the companies that were previously highlighted: 1. hǎi dǎn Corporation Wharf and 2.Caracola del Sol Services. Both of which are clearly in the centre of a concentric circle of nodes, with clear trade links pointing from other companies to them.
+
+2. Another benefit of this chart is the ability to separate groups of nodes into clear trading groups, showing the relationship between the companies that supplies to these hubs, as well as the network or supply chain of the larger trading groups. For example, the large network in which Caracola del Sol Services is one of the central nodes has a wider array of companies contributing to the flow of trade as compared to the smaller but more concentrated network that hǎi dǎn Corporation Wharf is part of. 
 :::
 
 # 4. Conclusion

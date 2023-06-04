@@ -247,18 +247,30 @@ ggraph(MC2_graph,
 
 ```
 
+::: callout-note
+From the above static graph, we can examine the connectedness of the nodes, with the additional fidelity of shipment frequencies. Intuitively, we can tell which companies are active, heavy trading partners, and which companies are more transient or light trading partners.
+
+1. Saltwater Supreme OAO Forwarding is a company that has extensive high frequency shipment across all time. In particular, its trading partners French Crab S.p.A Worldwide and bi mu yu Sagi Distribution are higher than the rest of the companies. As a result, we can conclude that they have a strong partnership, with Saltwater Supreme OAO Forwarding as their sole proprietorship - their main partner or hub to forward their catch shipments. 
+
+2. Another interesting relationship is that of nian yu Ltd Coporation, which has the next significantly highest edge weights. From the names of the companies that form that cluster of networks, a hypothesis can be made that they do not dabble in fish shipments, but rather marine biology related. Or it may be a cover for their IUU fishing activities given the high frequency of shipments, something quite uncharacteristic of marine biology companies. Either way, this is deserving of greater scrutiny. 
+
+As this only depicts the aggregated frequency of shipments across all time, we are unable to determine any changes in the relationship over time. This will be addressed in the following chart. 
+:::
+
 ## 3.2.3 Plotting a graph with the facet_edges as (~year)
 
 This is done to detect trends in the shipment frequency (weight of edges) over time.
 
-```{r, fig.width=10, fig.height=13}
+```{r, fig.width=10, fig.height=18}
 g <- ggraph(MC2_graph, 
             layout = "nicely") + 
   geom_edge_link(aes(width=Weight), 
                  alpha=0.4, show.legend = "top") +
   scale_edge_width(range = c(0.1, 8)) +
   geom_node_point(aes(colour = id), 
-                  size = 3)
+                  size = 3) + 
+  geom_node_text(aes(label = id),size = 2, repel = TRUE
+  )
 
 g + facet_edges(~year)+
   th_foreground(foreground = "grey80",  
@@ -276,6 +288,16 @@ g + facet_edges(~year)+
     subtitle = "Companies with more pronounced widths depicts established partnerships between companies with business links"
   )
 ```
+
+::: callout-note
+From the above graph, which further spilts the previous chart into the various years using the facet feature of ggraph, we can delve into the changes in relationship patterns between the companies over the years. With that, we may be able to determine suspicious activities or behaviours over time. In looking for patterns to scrutinise, i first identify edges which have bigger widths, which are present for a short period of time, and as quickly are not present in the next year. This may be characteristic of companies which engage in IUU activities, which capitalise of on the fact that it is a new company, try to make as much illegal money as it possibly can as it flies under the radar, and then when it rouses the suspicion of the authorities, are forced to shut down and reappear as another company. 
+
+1. The relationship between Ola Azul Ges m.B.H Services and Saltwater Supreme OAO Forwarding has a very thick edge with depicting many shipments in 2030. However, this relationship had totally gone cold in 2031. This could be an example of the above-mentioned phenomenon. 
+
+2. Another possibly suspicious group of companies would be Saltwater Sisters Inc Seafaring and Togo S.A de C.V in the year 2033. Again, similar to the above observation, there is a huge edge width for the year 2033 only, with nothing the year prior and relatively negligible activity the year after. This could be a sign of the suspicious activities.
+
+For contrast, an example of more normal business activity would be the relationship between Ianira Starfish Import and Haryana s Sagl Transport over the years 2028 to 2030. There is a more gradual decline of activity over time, as oppose to a sudden stop as observed in the 2 examples given above.
+:::
 
 ## 3.2.4 Plotting an interactive network graph using visNetwork
 
@@ -355,3 +377,5 @@ Building upon the visNetwork chart in 3.4.2, we further refine the data and char
 :::
 
 # 4. Conclusion
+
+While this investigation has yielded some interesting insights in the world of international fish shipments, it has also been a challenge to make sense of given the scale and complexity of the relationships. In essence, this exercise has shown that much time is needed to understand the underlying context of the network before educated guesses on the nature of relationships and areas of possible suspicious activities can be identified for further investigation. 

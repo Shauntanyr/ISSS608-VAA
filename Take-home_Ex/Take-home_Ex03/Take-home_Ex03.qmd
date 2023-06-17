@@ -13,21 +13,32 @@ execute:
   eval: True
 ---
 
+# 1. The Task
+
+## 1.1 Background
+
+The country of Oceanus has sought FishEye International's help in identifying companies possibly engaged in illegal, unreported, and unregulated (IUU) fishing. As part of the collaboration, FishEye's analysts received import/export data for Oceanus' marine and fishing industries. However, Oceanus has informed FishEye that the data is incomplete. To facilitate their analysis, FishEye transformed the trade data into a knowledge graph. Using this knowledge graph, they hope to understand business relationships, including finding links that will help them stop IUU fishing and protect marine species that are affected by it. FishEye analysts found that node-link diagrams gave them a good high-level overview of the knowledge graph. However, they are now looking for visualizations that provide more detail about patterns for entities in the knowledge graph
+
+## 1.2 The Task in detail
+
+Use visual analytics to identify anomalies in the business groups present in the knowledge graph. Limit your response to 400 words and 5 images.
+
+# 2. Data Prep
+
+## 2.1 Loading the requisite R libraries:
 
 ```{r}
-pacman::p_load(jsonlite, tidygraph, ggraph, visNetwork, gralayouts, ggforce, tidytext, tidyverse)
+pacman::p_load(jsonlite, tidygraph, ggraph, visNetwork, gralayouts, ggforce, tidytext, tidyverse, skimr, patchwork, ggdist, ggridges, ggthemes, scales)
 ```
 
-## Importing json file by using jsonlite package
+## 2.2 Importing the requisite JSON files
 
 ```{r}
 mc3_data <-
   jsonlite::fromJSON("data/MC3.json")
 ```
 
-```{r}
-mc3_edges <- as_tibble(mc3_data$links)
-```
+## 2.2 Extracting Edges
 
 ```{r}
 mc3_edges <-
@@ -42,9 +53,7 @@ mc3_edges <-
   ungroup()
 ``` 
 
-```{r}
-mc3_nodes <- as_tibble(mc3_data$nodes)
-```
+## 2.3 Extracting Nodes
 
 ```{r}
 mc3_nodes <- as_tibble(mc3_data$nodes) %>%
@@ -57,12 +66,409 @@ mc3_nodes <- as_tibble(mc3_data$nodes) %>%
   select(id, country, type, revenue_omu, product_services)
 ```
 
-## Initial 
+# 3. Initial Data Exploration
 
-need to recode the character(0) into NA to ensure future text sensing will be coherent
+## 3.1 Exploring Edges
 
-business group can be found by type (ie. company, beneficial owner, company contacts). beneficial owner will be connected to comapny. Company contacts will be connect to company. company connected to company 
+```{r}
+skim(mc3_edges)
+```
 
-look also at the description part. Some can be straightforward: automobile. Other can be computer product notebooks etc,
+```{r}
+DT::datatable(mc3_edges)
+```
 
-if you dont do text analytics, can just type in the filter and explore key words like "fish"
+```{r}
+ggplot(data = mc3_edges,
+       aes(x = type)) +
+  geom_bar()
+```
+## 3.2 Exploring the nodes data frame
+
+```{r}
+skim(mc3_nodes)
+```
+
+```{r}
+DT::datatable(mc3_nodes)
+```
+
+```{r}
+ggplot(data = mc3_nodes,
+       aes(x = type)) +
+  geom_bar()
+```
+Exploring Country of Origin
+
+```{r}
+nodes_country <- mc3_nodes %>%
+  group_by(country, type) %>%
+  summarise(count = n()) %>%
+  ungroup()
+```
+
+```{r, fig.width=7, fig.height=9}
+plot_company <- nodes_country %>%
+  filter(type == "Company" &
+           count > 150) %>%
+  ggplot(aes(x = reorder(country, -count), y = count)) +
+  geom_col() +
+  ylim(0,4000) +
+  geom_text(
+    aes(label = count),
+    vjust = -2
+  ) +  
+  labs(
+    title = "Count of Company's Country of Origin", y= "Count", x = "Country", subtitle = "Companies predominantly from ZH, Oceanus, and Marebak"
+  )
+
+plot_owner <- nodes_country %>%
+  filter(type == "Beneficial Owner") %>%
+  ggplot(aes(x = reorder(country, -count), y = count)) +
+  geom_col() +
+  ylim(0,14000) +
+  geom_text(
+    aes(label = count),
+    vjust = -2
+  ) +  
+  labs(
+    title = "Count of Beneficial Owner's Country of Origin", y= "Count", x = "Country", subtitle = "Beneficial Ownders predominantly from ZH"
+  )
+
+plot_contacts <- nodes_country %>%
+  filter(type == "Company Contacts") %>%
+  ggplot(aes(x = reorder(country, -count), y = count)) +
+  geom_col() +
+  ylim(0,8000) +
+  geom_text(
+    aes(label = count),
+    vjust = -2
+  ) +  
+  labs(
+    title = "Count of Company Contacts' Country of Origin", y= "Count", x = "Country", subtitle = "Company Contact predominantly from ZH"
+  ) 
+
+plot_company / plot_owner / plot_contacts
+```
+
+:::callout-note
+
+Despite most of the owners and and company contacts orginating from ZH, there count of country of origin of the company is more diverse, with ZH, Oceanus, and Marebak taking the top 3 spots. It is indicative of owners venturing out of their own countries to set up companies in other countries.
+
+:::
+
+Exploring revenue of companies
+
+```{r}
+company_revenue <- mc3_nodes %>% 
+  filter(type == "Company")
+
+ggplot(company_revenue, 
+       aes(y = revenue_omu)) +
+ scale_y_continuous(
+    limits = c(0, 200000),
+    breaks = pretty_breaks(n = 5),
+    labels = dollar_format())+
+  geom_boxplot(width = 0.5,
+               outlier.shape = NA, color = 'darkred') +
+  stat_dots(color = 'blue') +
+  coord_flip() + 
+  labs(
+    title = "Distribution of Revenue of Companies", y= "Revenue", x = "Count", subtitle = "Highly right skewed distribution of companies' revenue"
+  )
+
+```
+
+Exploring the relationship between owners and companies:
+
+Getting the number of owners each company has:
+
+```{r}
+edges_by_target <- mc3_edges %>%
+  filter(type == 'Beneficial Owner') %>%
+  group_by(source, type) %>%
+  summarise(owner_count = n())%>%
+  arrange(desc(owner_count))%>%
+  ungroup()
+```
+
+```{r}
+DT::datatable(edges_by_target)
+```
+The table above displays the number of owner each company has. It is postulated that companies with multiple beneficial owners has the oversight of many people, it is unlikely to be engaged in dubious activities, whereas companies which are sole proprietorships are at the bidding of that single beneficial owner. 
+
+```{r}
+owner_count_df <- edges_by_target %>%
+  group_by(owner_count) %>%
+  summarize(count = n()) %>%
+  arrange(desc(count)) %>%
+  ungroup()
+```
+
+```{r}
+filtered_data <- owner_count_df %>%
+  filter(owner_count <= quantile(owner_count, 0.2))
+
+ggplot(filtered_data, aes(x = factor(owner_count), y = count)) +
+  geom_col() +
+  ylim(0,7000) +
+  geom_text(
+    aes(label = count),
+    vjust = -1,
+    size = 3
+  ) +  
+  labs(
+    title = "Count of Companies by number of owners", y= "Count of Companies", x = "Number of Owners", subtitle = "Majority of companies have only one owner"
+  )
+```
+The above graph shows that 6415 companies are sole proprietorships.
+
+Conclusion of EDA
+
+:::callout-note
+
+Initial Sensing:
+
+1. Revenue is a good place to start to explore anomalous behaviour: 
+   
+   a. Beneficial owners who are sole owners of multiple companies
+   b. Companies with unreported revenue yet with many beneficial owners and company contacts - shows that the company is extensive, and should be reporting high revenue, yet the revenue is unaccounted for. 
+   c. Companies which are owned by single individuals vs those owned by multiple owners - complete control vs having to get the consensus of multiple shareholders. 
+:::
+
+
+# 3. Network Visualisation and Analysis
+
+
+## 3.1 Point of Interest 1:
+The fish anomalous behavious that will be investigated would be sole beneficial owners of multiple companies, with companies having higher revenue being more suspicious. The reason being, there is no need for transparency and being accountable to shareholders for these companies. As such, they are less deterred from pursuing illegal activities given the lesser oversight. 
+
+```{r}
+single_bowners <- mc3_edges %>%
+  filter(type == "Beneficial Owner") %>%
+  distinct(source, .keep_all = TRUE) 
+
+single_bowner_count <- single_bowners %>%
+  group_by(target) %>%
+  mutate(count = n()) %>%
+  filter(count >= 4) %>%
+  ungroup()
+``` 
+
+```{r}
+single_bowner_count_revenue <- left_join(single_bowner_count, mc3_nodes, by = c("source"="id")) %>%
+  select(-type.y) %>%
+  rename("type" = "type.x")
+
+single_bowner_count_revenue1 <-  single_bowner_count_revenue %>%
+  distinct() %>%
+  rename("from" = "source",
+         "to" = "target")
+
+bowner_source <- single_bowner_count_revenue1 %>%
+  distinct(from) %>%
+  rename("id" = "from")
+
+bowner_target <- single_bowner_count_revenue1 %>%
+  distinct(to) %>%
+  rename("id" = "to")
+
+bowner_nodes_extracted <- rbind(bowner_source, bowner_target)
+
+bowner_nodes_extracted$group <- ifelse(bowner_nodes_extracted$id %in% single_bowner_count_revenue$source, "Company", "Beneficial Owner")
+
+```
+
+Creating the visNetwork Graph
+
+```{r}
+visNetwork(
+    bowner_nodes_extracted, 
+    single_bowner_count_revenue1
+  ) %>%
+  visIgraphLayout(
+    layout = "layout_with_fr"
+  ) %>%
+  visGroups(groupname = "Company",
+            color = "lightblue") %>%
+  visGroups(groupname = "Company Contact",
+            color = "yellow") %>%
+  visLegend() %>%
+  visEdges(
+    arrows = "to"
+  ) %>%
+  visOptions(
+    highlightNearest = list(enabled = T, degree = 2, hover = T),
+    nodesIdSelection = TRUE,
+    selectedBy = "group",
+    collapse = TRUE)
+```
+:::callout-note
+
+With the possibility of lesser oversight, there is the chance that these companies may be participating in suspicious activity. However, it should be noted that the size as well and the fidelity of the nature of business of these companies is not available on the network graph. It should therefore be investigated in greater detail, before a solid conclusion can be formed. However, in the meantime, it is the exception and not the norm and should be monitored. 
+
+:::
+
+## 3.2 Point of Interest 2
+
+The next suspicious behaviour that deserves investigating would be companies with many company contacts, that have missing revenue reported. There is a chance that these companies are in fact bring in substantial revenue but have undeclared their revenue.
+
+```{r}
+# Extract nodes that have unreported revenue
+nodes_norev <- mc3_nodes %>%
+  filter(is.na(revenue_omu))
+
+nodes_norev_compcontact <- nodes_norev %>%
+  filter(type == "Company Contacts") %>%
+  distinct()
+
+# Extracting edges that are company contacts
+edges_norev <- mc3_edges %>%
+  filter(type == "Company Contacts") %>%
+  filter(source %in% nodes_norev_compcontact$id) %>%
+  distinct() %>%
+  rename("from" = "source",
+         "to" = "target")
+
+# Extract edges that have more than or equal to 3 company contacts
+edges_norev_high <- edges_norev %>%
+  group_by(from) %>%
+  mutate(count = n()) %>%
+  filter(count >= 3) %>%
+  ungroup()
+```
+
+```{r}
+# Get distinct Source and Target
+norev_source <- edges_norev_high %>%
+  distinct(from) %>%
+  rename("id" = "from")
+
+norev_target <- edges_norev_high %>%
+  distinct(to) %>%
+  rename("id" = "to")
+```
+
+```{r}
+# Bind into single dataframe
+nodes_norev1 <- bind_rows(norev_source, norev_target)
+
+nodes_norev1$group <- ifelse(nodes_norev1$id %in% nodes_norev_compcontact$id, "Company Contact", "Company")
+```
+
+Creating the visNetwork graph
+
+```{r}
+visNetwork(
+    nodes_norev1, 
+    edges_norev_high
+  ) %>%
+  visIgraphLayout(
+    layout = "layout_with_fr"
+  ) %>%
+  visGroups(groupname = "Company",
+            color = "lightblue") %>%
+  visGroups(groupname = "Company Contact",
+            color = "yellow") %>%
+  visLegend() %>%
+  visEdges(
+    arrows = "to"
+  ) %>%
+  visOptions(
+    highlightNearest = list(enabled = T, degree = 2, hover = T),
+    nodesIdSelection = TRUE,
+    selectedBy = "group",
+    collapse = TRUE)
+```
+:::callout-note
+
+It is indeed suspicious that so many large companies have unreported revenue. The potulated size, given the lack of revenue data, can only be extrapolated using the number of contacts, and the number of beneficial owners. It should be noted that the number of contacts of these top few companies are similar to those of the top few companies with reported revenue. This should be investigated in further details with other forms of proxy information obtained and pieced together to determine what they can possibly be hiding.  
+
+:::
+
+
+## 3.3 Point of Interest 3
+
+The last visual that i would be using to explore specifically fish-related anomalous behaviour would be the networks of biggest company-beneficial owner relationships of fish-related businesses. The reason that this is done is to compare and understand the typical network size of a fish-related business in terms of number of beneficial owners, and compare it with the industry standard. 
+
+```{r}
+# Extract nodes that are fish-related
+fish_nodes <- mc3_nodes %>%
+  filter(grepl("fish", product_services, ignore.case = TRUE))
+
+fish_nodes_bowners <- fish_nodes %>%
+  filter(type == "Beneficial Owners") %>%
+  distinct()
+
+fish_nodes_companies <-fish_nodes %>%
+  filter(type == "Company") %>%
+  distinct()
+
+# Extract edges that are fish related
+edges_fish <- mc3_edges %>%
+  filter(type %in% c("Company", "Beneficial Owner")) %>%
+  filter(source %in% fish_nodes$id) %>%
+  distinct() %>%
+  rename("from" = "source",
+         "to" = "target")
+
+# Extract edges that have more than or equal to 8 links
+edges_fish_high <- edges_fish %>%
+  group_by(from) %>%
+  mutate(count = n()) %>%
+  filter(count >= 8) %>%
+  ungroup()
+```
+
+```{r}
+# Get distinct Source and Target
+fish_source <- edges_fish_high %>%
+  distinct(from) %>%
+  rename("id" = "from")
+
+fish_target <- edges_fish_high %>%
+  distinct(to) %>%
+  rename("id" = "to")
+```
+
+```{r}
+# Bind into single dataframe
+nodes_fish1 <- bind_rows(fish_source, fish_target)
+
+nodes_fish1$group <- ifelse(nodes_fish1$id %in% fish_nodes_companies$id, "Company", "Beneficial Owner")
+```
+
+Creating the visNetwork Graph
+
+```{r}
+visNetwork(
+    nodes_fish1, 
+    edges_fish
+  ) %>%
+  visPhysics(solver = "forceAtlas2Based",
+               forceAtlas2Based = list(gravitationalConstant = -100)) %>%
+  visIgraphLayout(
+    layout = "layout_with_fr"
+  ) %>%
+  visGroups(groupname = "Company",
+            color = "yellow") %>%
+  visGroups(groupname = "Beneficial Owner",
+            color = "lightblue") %>%
+  visLegend() %>%
+  visEdges(
+    arrows = "to"
+  ) %>%
+  visOptions(
+    highlightNearest = list(enabled = T, degree = 2, hover = T),
+    nodesIdSelection = TRUE,
+    selectedBy = "group",
+    collapse = TRUE)
+```
+:::callout-note
+
+It is interesting to note that there are no personnel that are beneficial owners of more than 1 companies for these "large" or extensive companies. There is a possibility that they do not want to have multiple owners for fear of a conflict of interest or corporate espionage. While this is not necessarily anomalous behaviour, it is an interesting point to note, and it may even be representative of the different cartels in the fish industry. 
+
+:::
+
+# 4. Conclusion
+

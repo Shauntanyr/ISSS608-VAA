@@ -25,14 +25,11 @@ Use visual analytics to identify anomalies in the business groups present in the
 
 # 2. Data Prep
 
-## 2.1 Loading the requisite R libraries:
+## 2.1 Loading the requisite R libraries and importing the JSON file:
 
 ```{r}
 pacman::p_load(jsonlite, tidygraph, ggraph, visNetwork, gralayouts, ggforce, tidytext, tidyverse, skimr, patchwork, ggdist, ggridges, ggthemes, scales)
 ```
-
-## 2.2 Importing the requisite JSON files
-
 ```{r}
 mc3_data <-
   jsonlite::fromJSON("data/MC3.json")
@@ -70,35 +67,68 @@ mc3_nodes <- as_tibble(mc3_data$nodes) %>%
 
 ## 3.1 Exploring Edges
 
+### 3.1.1 Edges from the mc3_edges dataframe are explored using the skim and datatable functions.
+
 ```{r}
 skim(mc3_edges)
 ```
+The are no missing variables in the mc3_edges dataframe.
 
+We next take a glimpse of the first few lines of the dataframe using the following datatable.
 ```{r}
 DT::datatable(mc3_edges)
 ```
+This dataframe depicts the connections between companies and company contacts/beneficial owners. 
+
+### 3.1.2 Bar Chart of Type of Edges
+
+To further explore the count of each type of contact, we plot a bar chart of the type of edges in the mc3_edges dataframe. 
 
 ```{r}
 ggplot(data = mc3_edges,
        aes(x = type)) +
-  geom_bar()
+  geom_bar() +
+  geom_text(
+    aes(label = after_stat(count)),
+    stat = "count",
+    vjust = -2
+  ) + 
+  ylim (0,18000) + 
+  labs(title = "Count of type of edges in mc3_edges dataframe", y= "Count", x = "Type of Edges" )
 ```
+There are significantly more beneficial owners (16792) vs company contacts (7244)
+
 ## 3.2 Exploring the nodes data frame
+
+### 3.2.1 Nodes from the mc3_nodes dataframe are explored using the skim and datatable functions.
 
 ```{r}
 skim(mc3_nodes)
 ```
+There are 21515 missing values in the revenue_omu column. Given the importance of this data, and the huge number of missing values, it rouses suspicion and will be explored in greater detail subsequently.
 
 ```{r}
 DT::datatable(mc3_nodes)
 ```
 
+### 3.2.2 Bar Chart of Type of Nodes
+
+Next, a bar chart of the type of nodes is plotted. 
+
 ```{r}
 ggplot(data = mc3_nodes,
        aes(x = type)) +
-  geom_bar()
+  geom_bar() +
+  geom_text(
+    aes(label = after_stat(count)),
+    stat = "count",
+    vjust = -2
+  ) + ylim (0,13000) + labs(
+    title = "Count of type of nodes in mc3_nodes dataframe", y= "Count", x = "Type" )
 ```
-Exploring Country of Origin
+### 3.2.3 Bar chart of Country of Origin
+
+Next, we explore explore Country of Origin of the nodes for interesting relationships, comparing between Companies vs. Company contacts vs. Beneficial owners.
 
 ```{r}
 nodes_country <- mc3_nodes %>%
@@ -157,7 +187,9 @@ Despite most of the owners and and company contacts orginating from ZH, there co
 
 :::
 
-Exploring revenue of companies
+### 3.2.4 Distribution of Revenue of Companies
+
+Revenue is postulated to provide substantial information on the company, and would be instrumental in providing clues to any anomalous behaviours. A boxplot with frequency dot plot overlaid is plotted to visualise the distribution.
 
 ```{r}
 company_revenue <- mc3_nodes %>% 
@@ -179,7 +211,9 @@ ggplot(company_revenue,
 
 ```
 
-Exploring the relationship between owners and companies:
+The chart above shows that a majority of the companies make less than $25,000 in revenue and the distribution of the revenue of companies os right skewed. 
+
+### 3.2.5 Relationship between Companies and Number of Owners
 
 Getting the number of owners each company has:
 
@@ -191,7 +225,7 @@ edges_by_target <- mc3_edges %>%
   arrange(desc(owner_count))%>%
   ungroup()
 ```
-
+Exploring the datatable of edges by companies:
 ```{r}
 DT::datatable(edges_by_target)
 ```
@@ -221,27 +255,29 @@ ggplot(filtered_data, aes(x = factor(owner_count), y = count)) +
     title = "Count of Companies by number of owners", y= "Count of Companies", x = "Number of Owners", subtitle = "Majority of companies have only one owner"
   )
 ```
-The above graph shows that 6415 companies are sole proprietorships.
+The above graph shows that 6415 companies are sole proprietorships and form the majority of the companies. 
 
-Conclusion of EDA
+### 3.2.6 Conclusion of EDA
 
 :::callout-note
 
 Initial Sensing:
-
-1. Revenue is a good place to start to explore anomalous behaviour: 
    
-   a. Beneficial owners who are sole owners of multiple companies
-   b. Companies with unreported revenue yet with many beneficial owners and company contacts - shows that the company is extensive, and should be reporting high revenue, yet the revenue is unaccounted for. 
-   c. Companies which are owned by single individuals vs those owned by multiple owners - complete control vs having to get the consensus of multiple shareholders. 
+1. Beneficial owners who are sole owners of multiple companies wield disproportionate influence with having more autonomy without the scrutiny of other beneficial owners. 
+   
+2. Companies with unreported revenue yet with many company contacts - shows that the company is extensive, and could be reporting high revenue, yet the revenue is unaccounted for. 
+   
+3. Given that the dataset contains companies engaged in many other types of products/services besides fish-related services, we should narrow down the search to just fish related companies to further explore anomalous behaviours. 
 :::
 
 
 # 3. Network Visualisation and Analysis
 
-
 ## 3.1 Point of Interest 1:
-The fish anomalous behavious that will be investigated would be sole beneficial owners of multiple companies, with companies having higher revenue being more suspicious. The reason being, there is no need for transparency and being accountable to shareholders for these companies. As such, they are less deterred from pursuing illegal activities given the lesser oversight. 
+
+The first anomalous behaviour that will be investigated would be sole beneficial owners of multiple companies, with companies having higher revenue being more suspicious. The reason being, there is no need for transparency and being accountable to shareholders for these companies. As such, they are less deterred from pursuing illegal activities given the lesser oversight.
+
+Wrangling the edges and nodes dataframe to enable the creation of a network graph.
 
 ```{r}
 single_bowners <- mc3_edges %>%
@@ -291,7 +327,7 @@ visNetwork(
   ) %>%
   visGroups(groupname = "Company",
             color = "lightblue") %>%
-  visGroups(groupname = "Company Contact",
+  visGroups(groupname = "Beneficial Owner",
             color = "yellow") %>%
   visLegend() %>%
   visEdges(
@@ -312,6 +348,8 @@ With the possibility of lesser oversight, there is the chance that these compani
 ## 3.2 Point of Interest 2
 
 The next suspicious behaviour that deserves investigating would be companies with many company contacts, that have missing revenue reported. There is a chance that these companies are in fact bring in substantial revenue but have undeclared their revenue.
+
+Wrangling the edges and nodes dataframe to enable the creation of a network graph.
 
 ```{r}
 # Extract nodes that have unreported revenue
@@ -389,7 +427,9 @@ It is indeed suspicious that so many large companies have unreported revenue. Th
 
 ## 3.3 Point of Interest 3
 
-The last visual that i would be using to explore specifically fish-related anomalous behaviour would be the networks of biggest company-beneficial owner relationships of fish-related businesses. The reason that this is done is to compare and understand the typical network size of a fish-related business in terms of number of beneficial owners, and compare it with the industry standard. 
+The last visual that i would be using to explore specifically fish-related anomalous behaviour would be the networks of biggest company-beneficial owner relationships of fish-related businesses. The reason that this is done is to compare and understand the typical network size of a fish-related business in terms of number of beneficial owners, and compare it with the industry standard.
+
+Wrangling the edges and nodes dataframe to enable the creation of a network graph.
 
 ```{r}
 # Extract nodes that are fish-related
@@ -472,3 +512,6 @@ It is interesting to note that there are no personnel that are beneficial owners
 
 # 4. Conclusion
 
+Exploring the networks between the various type of nodes or players in the space has been useful to visualising the relationships between the different parties. It has yielded interesting insights on how certain companies may wield more autonomy, or how certain companies, despite being expansive, may be hiding behind unreported revenues. 
+
+For future work, the additional column of product services can be sorted and analysed using text analytics methods, to provide an additional layer of to the overall visualisation of networks and information in this project. 
